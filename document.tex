@@ -6,31 +6,35 @@
 \documentclass[
     ieee, % Bibliography style: ieee, wmaainf
     bachelor, % Type of thesis: master, bachelor, report
-    english, % Language: german, english
+    german, % Language: german, english
     singlepage % Cover Layout: singlepage, doublepage
 ]{ohm}
 %----------------------------------------------------------------------
 % Meta data section
 %----------------------------------------------------------------------
-\title{My very fancy thesis title}
-\author{Muster Masterstudent}
+\title{Vom KI-Prototypen zur sicheren Desktop-Applikation}
+\author{Joshua Ohans}
 \date{\today}
 %----------------------------------------------------------------------
-\examiner{Prof.\,Dr.\,Max Mustermann}
-\examiner{Prof.\,Dr.\,Monica Musterfrau}
+\examiner{Prof.\,Dr.\,Michael Strieve}
+\examiner{Prof.\,Dr.\,Rolf Dornberger}
 %----------------------------------------------------------------------
 % \subject{Artificial Intelligence and Specific Processor Architecture: TPUs, GPUs} % Optional for reports
 %----------------------------------------------------------------------
 % \company{Example AG} % Optional
 % \supervisor{Dr.\,rer.\,nat.\,Muster Betreuerin} % Optional, multiple supported
 %----------------------------------------------------------------------
-\keyword{Container Image}
-\keyword{Software Supply Chain Security}
+\keyword{KI-Prototyp}
+\keyword{Elektron}
+\keyword{Desktop-Applikation}
+\keyword{Sicherheit}
+\keyword{IPC}
+\keyword{Web-zu-Desktop-Transformation}
 %----------------------------------------------------------------------
 \repository{https://git.informatik.fh-nuernberg.de/maxmu123/thesis} % Optional
 %----------------------------------------------------------------------
 \begin{abstract}
-    \emph{Only if thesis is written in English.}
+    \emph{Abstract yet to be written.}
 \end{abstract}
 %----------------------------------------------------------------------
 \begin{kurzdarstellung}
@@ -63,12 +67,14 @@
 %----------------------------------------------------------------------
 % \mainmatter
 %----------------------------------------------------------------------
-\include{content/1_intro}
-\include{content/2_data}
-\include{content/3_method}
-\include{content/4_experiments}
-\include{content/5_outlook}
-\include{content/6_summary}
+\include{content/1_einleitung}
+\include{content/2_hintergrund}
+\include{content/3_methodik}
+\include{content/4_analyse}
+\include{content/5_entwurf}
+\include{content/6_evaluation}
+\include{content/7_diskussion}
+\include{content/8_fazit}
 %----------------------------------------------------------------------
 % \backmatter
 %----------------------------------------------------------------------
