@@ -1,12 +1,8 @@
 # Thesis Template — LLM Context
 
-This file is a context guide for AI coding assistants (LLMs) working on this repository.
-
-## Repository Overview
-
 This is a **LaTeX thesis/expose template** for students at TH Nürnberg Georg Simon Ohm (Faculty of Computer Science). The template produces PDF/A-2b compliant documents.
 
-This is a **submodule** of the parent project `BA-Studyplan/` (Joshua Ohans' bachelor thesis on transforming an AI-generated web prototype into a secure Electron desktop app). The parent `LLM_CONTEXT.md` (`../LLM_CONTEXT.md`) contains the full project context — always consult it when writing thesis content.
+This is a **submodule** of the parent project `BA-Studyplan/`. Use the `/thesis` Kilo command in the parent repo for thesis-relevant context (project identity, RQs, methodology).
 
 - **Main document**: `document.tex` (thesis or report)
 - **Expose sub-project**: `expose/expose.tex` (thesis proposal, max 2 pages)
@@ -223,47 +219,18 @@ Use the following patterns when writing thesis content.
 ## Thesis-Specific Context
 
 This thesis repository is a **LaTeX submodule** inside the parent project `BA-Studyplan/`.
-When writing thesis content, reference the parent `LLM_CONTEXT.md` (`../LLM_CONTEXT.md`) for complete project context, including:
 
-- **Author**: Joshua Ohans
-- **Thesis title**: *Vom KI-Prototypen zur sicheren Desktop-Applikation* — Transforming an AI-generated fullstack web prototype into a secure Electron desktop app
-- **Methodology**: Design Science Research (DSR) — every design cycle must be documented with plan, implementation, and reflection
-- **Research questions (FF1–FF4)**: Covering IPC transformation, refactoring patterns, SQLite migration, and security hardening
-- **Tech stacks**: Current (web prototype: React 19, Express 5, PostgreSQL, Drizzle ORM) vs. Target (Electron, SQLite, IPC, Context Isolation)
+When writing thesis content, use the `/thesis` Kilo command in the parent repo for project identity, RQs, and methodology context.
 
-### Chapter-to-Source Mapping
-
-| Chapter | File | Primary Sources (parent `BA-Studyplan/`) |
-|---|---|---|
-| 1 Einleitung | `content/1_einleitung.tex` | `LLM_CONTEXT.md` (Project Identity, Research Questions), expose PDFs in `Organisatorisches/Expose/` |
-| 2 Theoretischer Hintergrund | `content/2_hintergrund.tex` | `refs.bib` references, `LLM_CONTEXT.md` Tech Stacks, Architecture Decisions |
-| 3 Methodisches Vorgehen | `content/3_methodik.tex` | `LLM_CONTEXT.md` DSR Methodology section |
-| 4 Analyse und Problemanalyse | `content/4_analyse.tex` | `.agents/artifacts/` DSR design cycle documentation |
-| 5 Entwurf und Entwicklung | `content/5_entwurf.tex` | `.agents/artifacts/` DSR design cycle documentation |
-| 6 Evaluation und Demonstration | `content/6_evaluation.tex` | `.agents/artifacts/` DSR design cycle documentation |
-| 7 Diskussion | `content/7_diskussion.tex` | `.agents/memory/MEMORY.md`, findings from chapters 4-6 |
-| 8 Fazit und Ausblick | `content/8_fazit.tex` | All prior chapters, `LLM_CONTEXT.md` open questions |
-
-### Where to Find Source Material for Thesis Content
+### Source Material for Thesis Content
 
 | Thesis Section | Source Location |
 |---|---|
-| Problem statement, motivation | `../LLM_CONTEXT.md` Project Identity, Research Questions |
-| Background / Related Work | References in `refs.bib` |
-| Methodology (DSR) | `../LLM_CONTEXT.md` DSR Methodology section |
-| Transformation approach | `../LLM_CONTEXT.md` Transformation Roadmap, Architecture Decisions |
-| Implementation details & code | `.agents/artifacts/` DSR design artifacts with plans, attempts, reflections |
-| Technical architecture | `../LLM_CONTEXT.md` Tech Stacks, Architecture Decisions |
-| Security hardening | `../LLM_CONTEXT.md` Electron Desktop target (IPC, Context Isolation, CSP) |
-| Gotchas / known issues | `.agents/memory/MEMORY.md` |
-
-### Important Paths (relative to parent `BA-Studyplan/`)
-
-| Path | Content |
-|---|---|
-| `.agents/artifacts/` | DSR design cycle documentation — primary source for chapters 4-5 |
-| `.agents/memory/MEMORY.md` | Persistent notes, gotchas, conventions |
-| `Organisatorisches/Expose/` | Expose PDFs (authoritative thesis spec) |
+| Project identity, RQs | `context/project.md` in parent repo (via `/thesis` command) |
+| Methodology | `context/methodology.md` in parent repo (via `/thesis` command) |
+| Thesis structure, LaTeX guide | `context/thesis-writing.md` in parent repo (via `/thesis` command) |
+| Implementation details | `.agents/artifacts/` in parent repo — DSR design artifacts |
+| Background / Related Work | `refs.bib` references |
 
 ## Rules for LLMs
 
