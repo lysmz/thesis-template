@@ -2,3 +2,80 @@
 \chapter{Theoretischer Hintergrund}
 \label{ch:hintergrund}
 %----------------------------------------------------------------------
+\section{KI-generierte Software: Werkzeuge, Qualität und Grenzen}
+\label{sec:ki-generierte-software}
+%----------------------------------------------------------------------
+Die vorliegende Arbeit setzt bei einem KI-generierten Web-Prototyp an, dessen Entstehung und Charakteristika für das gesamte Transformationsvorhaben grundlegend sind.
+Dieser Abschnitt ordnet zunächst die Landschaft der KI-gestützten Entwicklungswerkzeuge ein, aus der ein solcher Prototyp typischerweise hervorgeht.
+Anschließend werden die spezifischen Qualitätsdefizite herausgearbeitet, die den mit diesen Werkzeugen erzeugten Code auszeichnen, und deren Konsequenzen für eine sichere Weiterverwendung erörtert.
+%----------------------------------------------------------------------
+\subsection{Überblick über KI-gestützte Entwicklungstools}
+\label{sec:ueberblick-ki-tools}
+%----------------------------------------------------------------------
+Seit der Einführung leistungsfähiger \glspl{llm} hat sich eine Praxis etabliert, bei der Software überwiegend durch natürlichsprachliche Prompts anstelle manuell geschriebenen Codes entsteht.
+Der von Andrej Karpathy geprägte Begriff \emph{Vibe Coding} beschreibt diese Praxis treffend als ein Vorgehen, bei dem Entwicklerinnen und Entwickler den generierten Code akzeptieren, ohne ihn im Detail zu prüfen, und sich stattdessen auf das beobachtbare Verhalten der Anwendung verlassen~\cite{Wikipedia2026VibeCoding}.
+Diese Arbeitsweise senkt die Einstiegshürde für die Softwareentwicklung erheblich, da auch technische Laien funktionsfähige Prototypen erstellen können~\cite{edwards2025vibecoding}.
+Aus dieser Entwicklung ist eine heterogene Landschaft spezialisierter Werkzeuge entstanden, die sich hinsichtlich Zielsetzung, bevorzugtem Technologie-Stack und Grad der Cloud-Abhängigkeit deutlich unterscheiden.
+
+\textbf{Replit} positioniert sich als Online-\gls{ide} mit integriertem KI-Agenten und fokussiert sich auf vollständige Full-Stack-Web-Prototypen, deren Persistenzschicht standardmäßig an eine cloudseitige Datenbank (Replit~DB bzw.\ PostgreSQL) gekoppelt ist und deren Ausführung ausschließlich in der Replit-Cloud erfolgt~\cite{replit2026agent}.
+Diese Architekturentscheidung begünstigt zwar schnelle, sofort ausführbare Prototypen, erzeugt jedoch einen erheblichen Vendor-Lock-in und schließt eine native lokale Ausführung von vornherein aus.
+\textbf{Lovable} spezialisiert sich auf die Generierung vollständiger Anwendungen aus natürlicher Sprache und verknüpft den erzeugten Code standardmäßig mit einem \gls{baas}-Anbieter, in der Regel Supabase, für Authentifizierung und Datenhaltung~\cite{lovable2026docs}.
+Dieses Kopplungsmuster beschleunigt die Prototyp-Erstellung, verlagert die Verantwortung für eine korrekte Sicherheitskonfiguration jedoch weitgehend auf die Endnutzenden, was sich in der Praxis wiederholt als Schwachstelle erwiesen hat, wie Unterabschnitt~\ref{sec:charakteristika-ki-code} anhand konkreter Vorfälle zeigt.
+\textbf{Cursor} und \textbf{GitHub Copilot} verfolgen demgegenüber einen assistenzbasierten Ansatz: Sie sind in einen bestehenden Entwickler-Workflow eingebettet und ergänzen dort die Codeerstellung zeilen- oder funktionsweise, stellen jedoch kein eigenständiges Prototyping-Werkzeug für vollständige Anwendungen dar.
+\textbf{Figma Make} adressiert wiederum ausschließlich die Übersetzung von Design-Artefakten in Frontend-Code und erzeugt pixelgenaue UI-Komponenten auf Basis bestehender Figma-Designsysteme, ohne dabei Backend-Logik oder Geschäftsregeln zu berücksichtigen~\cite{figma2026make}.
+Weitere Werkzeuge wie Bolt.new und v0 von Vercel besetzen ähnliche Nischen zwischen reinem UI-Prototyping und vollständiger Full-Stack-Generierung, wobei auch sie überwiegend auf eine cloudgebundene Deployment-Pipeline setzen.
+
+Tabelle~\ref{tab:ki-tools-vergleich} fasst die zentralen Vergleichsdimensionen dieser Werkzeuglandschaft zusammen.
+Trotz der Unterschiede im Detail zeigt sich ein gemeinsames Muster: Nahezu alle Werkzeuge sind auf eine Cloud-native, stateless Web-Architektur mit React- oder Next.js-Frontend und einem verwalteten Backend-Dienst ausgerichtet.
+Für das in dieser Arbeit betrachtete Transformationsszenario ist dies insofern relevant, als der Ausgangszustand des zu migrierenden Prototyps durch genau diese architektonischen Grundannahmen geprägt ist, unabhängig davon, mit welchem konkreten Werkzeug er erzeugt wurde.
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{p{2.4cm} p{3.2cm} p{3.6cm} p{4cm}}
+    \hline
+    \textbf{Werkzeug} & \textbf{Zielsetzung} & \textbf{Bevorzugter Stack} & \textbf{Architektur-Charakter} \\
+    \hline
+    Replit & Full-Stack-Prototyping & React/Node.js, PostgreSQL & Cloud-gebunden, monolithisch \\
+    Lovable & Full-Stack-Prototyping & React/Next.js, Supabase & Cloud-gebunden, \gls{baas}-gekoppelt \\
+    Cursor / Copilot & Assistenzbasierte Codegenerierung & sprachagnostisch & In bestehende Codebasis eingebettet \\
+    Figma Make & Design-zu-Code & React/Vue/HTML+CSS & Statisch, reines Frontend \\
+    Bolt.new / v0 & UI- und App-Prototyping & React/Next.js & Cloud-gebunden, deploymentorientiert \\
+    \hline
+  \end{tabular}
+  \caption{Vergleich KI-gestützter Entwicklungswerkzeuge nach Zielsetzung, Technologie-Stack und Architektur-Charakter}
+  \label{tab:ki-tools-vergleich}
+\end{table}
+%----------------------------------------------------------------------
+\subsection{Charakteristika und Qualitätsdefizite KI-generierten Codes}
+\label{sec:charakteristika-ki-code}
+%----------------------------------------------------------------------
+KI-generierter Code entsteht als Ergebnis eines Sprachmodells, das plausible Fortsetzungen auf Basis von Trainingsdaten produziert, nicht jedoch auf Basis einer bewussten architektonischen Planung.
+Daraus resultiert ein Black-Box-Charakter: Designentscheidungen, Abhängigkeitsstrukturen und Sicherheitsannahmen werden vom Modell nicht dokumentiert und sind aus dem Code selbst häufig nicht rekonstruierbar.
+Dieser Befund lässt sich anhand des Produktqualitätsmodells nach ISO/IEC~25010 systematisch einordnen, das Softwarequalität in Merkmale wie Wartbarkeit, Sicherheit, Kompatibilität und Zuverlässigkeit unterteilt~\cite{iso25010}.
+Empirische Untersuchungen zeigen für mehrere dieser Merkmale konsistente Defizite bei KI-generiertem Code.
+
+Hinsichtlich der \textbf{Sicherheit} liefert eine wachsende Zahl unabhängiger Studien ein weitgehend übereinstimmendes Bild.
+Pearce~\etal{} fanden bei einer systematischen Analyse von 1.689 durch GitHub Copilot generierten Programmen, dass rund 40\,\% der Vorschläge in sicherheitsrelevanten Szenarien verwundbaren Code enthielten~\cite{pearce2022asleep}.
+Tihanyi~\etal{} bestätigten dieses Muster mit dem FormAI-v2-Datensatz, der 331.000 durch neun verschiedene \glspl{llm} erzeugte C-Programme umfasst: Mittels formaler Verifikation wurden bei mindestens 62{,}07\,\% der Programme Schwachstellen nachgewiesen, wobei sich die untersuchten Modelle in ihrer Fehleranfälligkeit kaum unterschieden~\cite{tihanyi2024secure}.
+Asare~\etal{} relativierten dieses Bild insofern, als Copilot bei der Reproduktion bekannter Schwachstellenmuster aus menschlich verursachten \glspl{cwe} tendenziell seltener fehlerhaft reagierte als die ursprünglichen menschlichen Entwickler, was zeigt, dass die Befunde nicht als pauschale Unterlegenheit von KI-Code gegenüber menschlichem Code misszuverstehen sind~\cite{asare2023copilot}.
+Besonders relevant für die vorliegende Arbeit ist der Befund von Perry~\etal{}, dass Entwicklerinnen und Entwickler mit Zugang zu einem KI-Assistenten nicht nur signifikant unsichereren Code produzierten, sondern zugleich überzeugter waren, sicheren Code geschrieben zu haben, als die Kontrollgruppe ohne KI-Unterstützung~\cite{perry2023users}.
+Dieses Auseinanderfallen von wahrgenommener und tatsächlicher Sicherheit ist für den in dieser Arbeit betrachteten Anwendungsfall bedeutsam, da Nutzende von No-Code-Prototyping-Werkzeugen typischerweise über keine softwaretechnische Ausbildung verfügen und die Sicherheitsannahmen des generierten Codes daher kaum eigenständig hinterfragen können.
+Ein verwandtes, im Kontext von Lieferketten relevantes Risiko sind sogenannte \emph{Package Hallucinations}: Spracklen~\etal{} wiesen in einer Analyse von 576.000 Codebeispielen aus 16 verschiedenen \glspl{llm} nach, dass durchschnittlich mindestens 5{,}2\,\% der von kommerziellen und bis zu 21{,}7\,\% der von quelloffenen Modellen vorgeschlagenen Paketabhängigkeiten schlicht nicht existieren~\cite{spracklen2025package}.
+Derartige halluzinierte Abhängigkeiten eröffnen ein neuartiges Angriffsszenario, bei dem Angreifende gezielt Pakete unter den vom Modell wiederholt genannten, aber nicht existierenden Namen veröffentlichen.
+
+Auch bezüglich der \textbf{Wartbarkeit} zeichnet sich ein konsistenter Negativtrend ab.
+Eine Langzeitanalyse von GitClear über rund 153~Millionen geänderte Codezeilen zwischen 2020 und 2023 zeigt, dass der Anteil an kurzfristig wieder verworfenem oder überarbeitetem Code (\emph{Code Churn}) im Zuge der breiten Copilot-Adoption deutlich anstieg, während der Anteil an bewusst refaktoriertem Code parallel zurückging~\cite{gitclear2024coding}.
+Dieser Befund deckt sich mit der in der Praxis beobachteten Tendenz KI-generierten Codes zu geringer Kopplungsdisziplin und mangelnder Wiederverwendung bestehender Strukturen, was der \emph{Don't-Repeat-Yourself}-Maxime der Softwaretechnik zuwiderläuft.
+Strukturell äußert sich dies in einer fehlenden Trennung von Zuständigkeiten (\emph{Separation of Concerns}), da generierter Code primär auf die Erfüllung einer im Prompt beschriebenen Funktion optimiert wird und nicht auf die langfristige Erweiterbarkeit der Architektur.
+
+Nicht zuletzt relativiert eine kontrollierte Studie der Forschungsorganisation METR das verbreitete Narrativ pauschaler Produktivitätssteigerungen durch KI-Assistenz.
+In einem randomisierten Experiment mit 16 erfahrenen Open-Source-Entwicklerinnen und -Entwicklern, die reale Aufgaben in ihnen vertrauten, umfangreichen Repositories bearbeiteten, benötigten die Teilnehmenden bei erlaubter KI-Nutzung im Mittel 19\,\% mehr Zeit als ohne KI-Unterstützung, obwohl sie im Vorfeld eine Beschleunigung um 24\,\% erwartet hatten~\cite{metr2025measuring}.
+Dieser Befund ist nicht unmittelbar auf das No-Code-Prototyping durch technische Laien übertragbar, da die Studie erfahrene Entwickler in etablierten Codebasen mit hohen Qualitätsanforderungen untersuchte, doch er verdeutlicht, dass der Effekt von KI-Unterstützung auf Softwarequalität und -geschwindigkeit stark kontextabhängig und keineswegs durchgängig positiv ist.
+
+Die Konsequenzen dieser Qualitätsdefizite lassen sich anhand dokumentierter Vorfälle konkretisieren.
+Im Fall von Lovable wurde bekannt, dass von 1.645 untersuchten, mit dem Werkzeug erstellten Webanwendungen 170 eine fehlerhafte Zugriffskontrolle in der angebundenen Supabase-Datenbank aufwiesen, wodurch persönliche Daten, Zahlungsinformationen und API-Schlüssel öffentlich zugänglich waren~\cite{albergotti2025lovable}.
+In einem weiteren dokumentierten Fall löschte der KI-Agent von Replit trotz expliziter, mehrfach wiederholter Anweisung eine Produktionsdatenbank und meldete der Nutzenden Partei anschließend fälschlicherweise, eine Wiederherstellung sei nicht möglich~\cite{sharwood2025replit}.
+Beide Vorfälle illustrieren exemplarisch, dass die in den empirischen Studien nachgewiesenen Qualitäts- und Sicherheitsdefizite keine rein akademischen Randbefunde darstellen, sondern sich unmittelbar auf produktiv eingesetzte, KI-generierte Anwendungen auswirken.
+
+Für die vorliegende Arbeit ergibt sich aus diesem Befund eine zentrale Implikation: KI-generierter Code kann nicht unverändert (\emph{as-is}) in eine produktionsreife, sicherheitskritische Desktop-Anwendung überführt werden.
+Die in den folgenden Abschnitten dieses Kapitels behandelten Konzepte zur Web-zu-Desktop-Transformation, zum Local-First-Paradigma und zur Absicherung lokaler Anwendungen bilden daher nicht nur eine technische, sondern auch eine aus den hier dargestellten Qualitätsdefiziten begründete Notwendigkeit für ein systematisches Refactoring, das in Kapitel~\ref{ch:methodik} methodisch hergeleitet und in den Kapiteln~\ref{ch:analyse} und~\ref{ch:entwurf} auf die konkrete Fallstudie angewendet wird.
