@@ -2,7 +2,7 @@
 
 This is a **LaTeX thesis/expose template** for students at TH Nürnberg Georg Simon Ohm (Faculty of Computer Science). The template produces PDF/A-2b compliant documents.
 
-This is a **submodule** of the parent project `BA-Studyplan/`. Use the `/thesis` Kilo command in the parent repo for thesis-relevant context (project identity, RQs, methodology).
+This is a **submodule** of the parent project `BA-Studyplan/`. The `thesis-context-loader` skill (`.agents/thesis-context-loader/SKILL.md`) loads thesis-relevant context from the parent repo (project identity, RQs, methodology).
 
 - **Main document**: `document.tex` (thesis or report)
 - **Expose sub-project**: `expose/expose.tex` (thesis proposal, max 2 pages)
@@ -220,15 +220,15 @@ Use the following patterns when writing thesis content.
 
 This thesis repository is a **LaTeX submodule** inside the parent project `BA-Studyplan/`.
 
-When writing thesis content, use the `/thesis` Kilo command in the parent repo for project identity, RQs, and methodology context.
+When writing thesis content, the `thesis-context-loader` skill loads project identity, RQs, and methodology context from the parent repo.
 
 ### Source Material for Thesis Content
 
 | Thesis Section | Source Location |
 |---|---|
-| Project identity, RQs | `context/project.md` in parent repo (via `/thesis` command) |
-| Methodology | `context/methodology.md` in parent repo (via `/thesis` command) |
-| Thesis structure, LaTeX guide | `context/thesis-writing.md` in parent repo (via `/thesis` command) |
+| Project identity, RQs | `context/project.md` in parent repo |
+| Methodology | `context/methodology.md` in parent repo |
+| Thesis structure, LaTeX guide | `context/thesis-writing.md` in parent repo |
 | Implementation details | `.agents/artifacts/` in parent repo — DSR design artifacts |
 | Background / Related Work | `refs.bib` references |
 
