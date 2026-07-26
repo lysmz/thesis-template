@@ -1,0 +1,21 @@
+# 2.2.2 Desktop-Runtimes: Electron als Brückentechnologie
+
+KI-generierte Web-Prototypen produzieren vollwertige Full-Stack-Anwendungen, die konzeptionell auf eine cloudnative Bereitstellung mit HTTP-basierter Client-Server-Kommunikation ausgerichtet sind.
+Die lokale Ausführung als eigenständige Desktop-Anwendung erfordert daher eine RuntimeType, die Web-Technologien nahtlos mit den Betriebssystemdiensten des Desktops verbindet und zugleich eine Prozess-Trennung ermöglicht, die Sicherheitsisolation auf Systemebene sicherstellt.
+Elektron stellt genau diese Fähigkeit bereit, indem es Chromium als Renderer-Prozess mit Node.js als Main-Prozess auf einem einzigen JavaScript- und TypeScript-Stack vereint~\cite{electron2026docs}.
+Durch diesen gemeinsamen Stack entfällt die Notwendigkeit, den bestehenden Web-Frontend-Code in eine native Desktop-Sprache zu portieren, was die technische Voraussetzung für die Wiederverwendung des KI-generierten UI-Codes bildet.
+Die Architektur von Electron folgt einem Zwei-Prozess-Modell, das direkt mit dem Sicherheitskonzept aus Unterabschnitt~\ref{sec:sicherheitsmodell-electron} korrespondiert~\cite{electron2026docs}:
+Der Main-Prozess auf Node.js-Basis übernimmt alle Systemzugriffe wie Dateisystemoperationen, die Einbindung nativer Module und die Verwaltung von IPC-Kommunikation.
+Der Renderer-Prozess auf Chromium-Basis stellt die Benutzeroberfläche dar und erbt dabei die Sicherheitseinschränkungen eines Browsers, die durch Electron-spezifische Mechanismen wie Context-Isolation und Preload-Skripte zusätzlich verstärkt werden müssen~\cite{electron2026docs}.
+Dieses Zwei-Prozess-Modell bildet sowohl die Stärke von Electron — die klare Trennung von Darstellung und Systemzugriff — als auch die wesentliche Quelle der Komplexität, da Migrationen die IPC- und Preload-Schicht als Sicherheitsbarriere systematisch berücksichtigen müssen~\cite{electron2026docs}.
+Zur Einordnung der Wahl von Electron werden kurz die alternativen Desktop-Runtimes betrachtet, die in den letzten Jahren an Bedeutung gewonnen haben.
+Tauri setzt auf eine Rust-basierte native Shell und die Nutzung des vom Betriebssystem bereitgestellten WebView-Controls anstelle von bundled Chromium~\cite{tauri2025docs}.
+Diese Architektur führt zu deutlich smalleren Binärgrößen und einem geringeren Angriffsflächenprofil, erfordert jedoch, dass der gesamte native Backend-Code in Rust implementiert wird~\cite{tang2024tauri}.
+Das stellt für das in dieser Arbeit betrachtete Transformationsszenario einen fundamentalen architektonischen Konflikt dar:
+Der Node.js-basierte Backend-Code des KI-generierten Prototyps könnte nicht wiederverwendet werden, da Tauri keine Node.js-Laufzeitumgebung bereitstellt.
+NW.js entspricht architektonisch Electron am nächsten, indem es ebenfalls Chromium und Node.js kombiniert, verfügt jedoch über deutlich weniger Sicherheitsinfrastruktur~\cite{nwjs2026docs}.
+NW.js bietet weder ein eingebautes Context-Isolation-Konzept noch ein Preload-Muster, was es für eine thesis mit explizitem Fokus auf Sicherheits-Härtung irrelevant macht.
+Flutter Desktop verwendet eine gänzlich andere Rendering-Engine (Skia) und Programmiersprache (Dart) ohne JavaScript-Laufzeit~\cite{flutter2026docs}.
+Eine Adoption von Flutter würde eine vollständige Neuübersetzung der Frontend-Schicht erfordern und ist damit für das Reuse-Ziel der vorliegenden Arbeit ungeeignet.
+Elektron wird ausgewählt, da es die einzige bedeutende Desktop-Runtime ist, die den vollständigen JavaScript- und TypeScript-Stack der Web-Ausgangsanwendung erhalten kann und zugleich Sicherheitsinfrastrukturen wie Context-Isolation, Preload-Skripte und Content-Security-Policy-Unterstützung bietet, die mit den Sicherheitszielen dieser Arbeit konform gehen~\cite{electron2026docs}.
+Die Entscheidung für Electron ermöglicht zwar die Wiederverwendung von Web-Code, erzeugt zugleich jedoch eigene Sicherheitsanforderungen bzgl.\ Prozessisolierung, IPC-Kommunikation und Dateisystemzugriff, die im folgenden Unterabschnitt analysiert werden.
