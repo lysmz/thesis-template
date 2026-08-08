@@ -44,11 +44,95 @@ Vergleichsdimensionen:
 
 ### 2.2.3 Sicherheitsmodell von Electron
 
-- Context Isolation: Trennung von Preload-Skript und Renderer.
-- Preload-Skripte: definierte IPC-Schnittstelle zwischen Main und Renderer.
-- Sandboxing: Einschränkung des Renderer-Prozesses.
-- Node-Integration: standardmäßig deaktiviert — bewusste Entscheidung gegen Web-Entwicklungs-Gewohnheiten.
-- Relevanz für die Transformation: Web-Code, der naiv in Electron läuft, umgeht typischerweise alle Sicherheitsmechanismen.
+#### Leitgedanke des Abschnitts
+
+Der Abschnitt sollte Electron nicht als automatisch sichere Laufzeit darstellen. Electron stellt Sicherheitsmechanismen bereit, deren Wirksamkeit von der konkreten Konfiguration, der Gestaltung der IPC-Schnittstelle und der Vertrauenswürdigkeit des geladenen Inhalts abhängt. Die zentrale Frage lautet daher:
+
+> Wie wird die privilegierte Desktop-Funktionalität so vom Web-Code getrennt, dass eine Kompromittierung des Renderers nicht unmittelbar zu einem Zugriff auf das Betriebssystem führt?
+
+Der Abschnitt kann damit als Übergang von 2.2.2 zur späteren Sicherheitsanalyse dienen. 2.2.2 begründet die Wahl von Electron; 2.2.3 erklärt, welche Sicherheitsgrenzen Electron dafür anbietet und welche Verantwortung bei der Anwendung verbleibt.
+
+#### Mögliche Gliederung
+
+1. **Vertrauensgrenzen der Electron-Anwendung**
+   - Der Renderer verarbeitet HTML, CSS und JavaScript und sollte grundsätzlich wie nicht privilegierter Web-Code behandelt werden.
+   - Der Main-Prozess verfügt über weitreichende Rechte und muss deshalb als privilegierte Vertrauenszone betrachtet werden.
+   - Preload-Skript und IPC bilden keine automatische Sicherheitsgarantie, sondern eine kontrollierte Vermittlungsschicht.
+   - Electron besteht intern aus mehr als zwei Prozessen; für die Sicherheitsargumentation genügt die Unterscheidung zwischen privilegiertem Main-Prozess und unprivilegiertem Renderer.
+
+2. **Sicherheitskonfiguration des Renderer-Prozesses**
+   - `nodeIntegration: false`: Der Renderer erhält keinen direkten Zugriff auf Node.js-APIs.
+   - `contextIsolation: true`: Der JavaScript-Kontext des Web-Inhalts wird vom Preload-Kontext getrennt.
+   - `sandbox: true`: Die verfügbaren Betriebssystemrechte des Renderer-Prozesses werden zusätzlich begrenzt.
+   - Navigation und externe Inhalte sollten auf erwartete Ursprünge beziehungsweise lokale Dateien beschränkt werden.
+   - `webSecurity` sollte nicht deaktiviert werden; Entwicklungsbequemlichkeit darf nicht zum Sicherheitsprinzip werden.
+   - Die Konfiguration sollte nicht nur genannt, sondern als Kombination von Schutzmaßnahmen erklärt werden. Keine einzelne Option verhindert alle Angriffe.
+
+3. **Preload-Skript als minimale Capability-Schnittstelle**
+   - Das Preload-Skript soll nicht das gesamte Node.js- oder Electron-API an den Renderer weiterreichen.
+   - Über `contextBridge` werden nur fachlich erforderliche Funktionen veröffentlicht.
+   - Die API sollte capabilities statt allgemeiner Systemzugriffe anbieten, beispielsweise `saveStudyPlan(plan)` statt eines beliebigen `writeFile(path, data)`.
+   - Keine Weitergabe roher IPC-Funktionen wie `ipcRenderer.send` oder `ipcRenderer.invoke` an den Renderer.
+   - Rückgabewerte und Fehler sollten kontrolliert und auf die Domäne der Anwendung begrenzt werden.
+   - Das Preload-Skript ist Teil der privilegierten Vertrauensgrenze und muss deshalb ebenfalls geprüft werden.
+
+4. **IPC als sicherheitsrelevanter API-Vertrag**
+   - IPC-Kanäle sind Eingabepunkte in den privilegierten Main-Prozess und sollten wie öffentliche Backend-Endpunkte behandelt werden.
+   - Jeder Kanal benötigt eine eindeutige fachliche Verantwortung und eine serverseitige beziehungsweise mainseitige Validierung.
+   - Eingaben dürfen nicht allein deshalb als vertrauenswürdig gelten, weil sie aus dem eigenen Renderer stammen.
+   - Relevante Prüfungen: Typen, erlaubte Wertebereiche, Dateipfade, Ressourcenbezug, Berechtigungen und erwarteter Aufruferkontext.
+   - Fehler dürfen keine sensiblen Pfade, Stacktraces oder internen Daten an den Renderer weitergeben.
+   - Die IPC-Schnittstelle sollte synchronisations- und transaktionsbewusst entworfen werden, damit Sicherheitsprüfungen nicht durch Race Conditions umgangen werden.
+
+5. **Content Security Policy und nicht vertrauenswürdiger Inhalt**
+   - Eine Content Security Policy (CSP) reduziert die Möglichkeiten von injiziertem JavaScript und erschwert bestimmte XSS-Angriffe.
+   - CSP ist eine zusätzliche Verteidigungsschicht und ersetzt keine sichere Datenbehandlung oder Eingabevalidierung.
+   - Inline-Skripte, unkontrollierte Remote-Inhalte und unnötige externe Ressourcen sollten vermieden werden.
+   - Es muss entschieden werden, ob die Anwendung ausschließlich lokal gebündelte Inhalte lädt oder ob Remote-Inhalte notwendig sind. Letztere erhöhen die Vertrauens- und Updatekomplexität erheblich.
+   - Remote-Inhalte sollten nicht mit privilegierten APIs vermischt werden.
+
+6. **Typische Angriffskette als erklärendes Beispiel**
+   - Ein XSS- oder Injection-Fehler im Renderer ermöglicht die Ausführung fremden JavaScript-Codes.
+   - Bei aktivierter Node.js-Integration kann dieser Code unmittelbar auf privilegierte APIs zugreifen.
+   - Bei einer zu mächtigen Preload- oder IPC-Schnittstelle kann der Angreifer indirekt Dateisystem-, Prozess- oder Netzwerkoperationen auslösen.
+   - Eine unzureichende Pfadvalidierung kann zusätzlich Path Traversal ermöglichen.
+   - Die Architektur soll deshalb die Angriffskette an mehreren Stellen unterbrechen: Renderer-Isolation, minimale API, Eingabevalidierung, Least Privilege und kontrollierte Dateisystemzugriffe.
+   - Nicht jede XSS-Schwachstelle führt bei korrekter Electron-Konfiguration automatisch zu Remote Code Execution. Die konkrete Auswirkung hängt von den erreichbaren Schnittstellen und Rechten ab.
+
+7. **Least Privilege und Dateisystemzugriff**
+   - Der Main-Prozess sollte nur die Betriebssystemrechte erhalten, die für die konkrete Funktion erforderlich sind.
+   - Renderer und IPC-Aufrufer sollten keine frei wählbaren Dateisystempfade kontrollieren dürfen.
+   - Dateizugriffe sollten auf erlaubte Verzeichnisse, Dateitypen und Operationen begrenzt werden.
+   - Datei-Dialoge und Pfadauflösung können genutzt werden, um Benutzerentscheidungen und technische Zugriffsbeschränkungen zu verbinden.
+   - Schreib- und Leseoperationen sollten fachlich getrennt werden; ein allgemeiner Dateisystem-Wrapper wäre zu mächtig.
+
+8. **Sicherheit der Lieferkette und der Anwendungspakete**
+   - Electron-Sicherheit endet nicht bei der Prozesskonfiguration.
+   - Abhängigkeiten, Build-Tools, native Module und automatisch aktualisierte Pakete erweitern die Vertrauensbasis.
+   - Relevant sind veraltete oder kompromittierte Dependencies, unkontrollierte Postinstall-Skripte, fehlende Lockfiles und nicht überprüfte Updates.
+   - Die Arbeit sollte zwischen Laufzeitsicherheit, Anwendungscode und Lieferkettensicherheit unterscheiden.
+   - Für die Fallstudie könnte dokumentiert werden, welche Abhängigkeiten privilegiert ausgeführt werden und wie ihre Versionen beziehungsweise Herkunft geprüft werden.
+
+#### Bezug zur Transformation
+
+- Der ursprüngliche Web-Code darf nicht unverändert in den privilegierten Main-Prozess verschoben werden.
+- Geschäftslogik, Datenzugriff und Betriebssystemintegration sollten getrennt betrachtet werden.
+- Die Migration benötigt eine neue Sicherheitsarchitektur: Renderer für Darstellung und nicht privilegierte Interaktion, Preload für minimale Fähigkeiten, Main-Prozess für validierte privilegierte Operationen.
+- Sicherheitsrelevante Entscheidungen sollten als Transformationsregeln formulierbar sein, beispielsweise: „Kein direkter Dateisystemzugriff aus dem Renderer“ oder „Jeder IPC-Eingang validiert strukturierte Daten“.
+- Der Abschnitt sollte noch nicht die vollständige Umsetzung der Fallstudie vorwegnehmen. Er erklärt die Konzepte; konkrete Kanäle, Validatoren und Pfadregeln gehören in die späteren Entwurfs- und Implementierungskapitel.
+
+#### Mögliche Kernthese
+
+Electron bietet eine technische Grundlage für Isolation, erzwingt sie aber nicht. Sicherheit entsteht erst durch die Kombination aus abgeschalteter Node.js-Integration, Context Isolation, Sandboxing, minimaler Preload-API, validiertem IPC, CSP und konsequenter Rechtebegrenzung. Die entscheidende Transformationsleistung besteht deshalb nicht nur darin, Web-Code auf dem Desktop auszuführen, sondern eine explizite Vertrauensgrenze zwischen Web-Inhalt und Betriebssystem zu entwerfen.
+
+#### Offene Punkte für Quellen und spätere Überarbeitung
+
+- Electron-Dokumentation als Primärquelle für `contextIsolation`, `nodeIntegration`, Sandboxing, Preload und IPC verwenden.
+- Prüfen, welche Sicherheitsoptionen in der konkret verwendeten Electron-Version standardmäßig aktiviert sind; nicht pauschal von „standardmäßig deaktiviert“ sprechen, ohne die Version zu nennen.
+- CSP-Regeln anhand der tatsächlichen Build- und Deployment-Strategie der Anwendung formulieren.
+- Prüfen, ob die Fallstudie lokale Dateien, Remote-Inhalte, externe Links oder automatische Updates verwendet.
+- Die Begriffe XSS, RCE, IPC, Preload und Capability einmal definieren und anschließend konsistent verwenden.
+- Sicherheitsmaßnahmen nicht als vollständig oder absolut wirksam darstellen; verbleibende Risiken und Fehlkonfigurationen ausdrücklich benennen.
 
 ## 2.3 Das Local-First-Paradigma
 
