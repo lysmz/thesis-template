@@ -660,3 +660,11 @@ Als Ersatz für die letzten beiden Absätze bietet sich etwa diese Fassung an:
 > Electron wird daher als Zielruntime ausgewählt, weil die Technologie eine weitgehende Wiederverwendung des bestehenden Web- und Node.js-Stacks ermöglicht und zugleich Mechanismen zur kontrollierten Kapselung privilegierter Desktop-Funktionen bereitstellt. Diese Wiederverwendbarkeit reduziert den Migrationsaufwand, ersetzt jedoch keine Sicherheitsanalyse: Insbesondere die Trennung von Main- und Renderer-Prozessen, die Gestaltung der Preload-API, die Absicherung der IPC-Kommunikation sowie die Begrenzung von Dateisystemzugriffen sind für die Sicherheit der resultierenden Desktop-Anwendung maßgeblich. Diese Aspekte werden im folgenden Unterabschnitt untersucht.
 
 **Kurz gesagt:** Der Draft ist schon überzeugend. Der größte Gewinn entsteht, wenn du absolute Aussagen abschwächst, das Sicherheitsmodell präziser aufschlüsselst und die Runtime-Entscheidung anhand expliziter Auswahlkriterien argumentierst.
+
+
+# zu 2.3
+
+anmerkungen : es wird eine falsche annahme getroffen über das feature set the referenzapp in zeile 192. die app verfügt über ein gruppen feature das echtzeitkollaboration ermöglichen soll, dies gilt es auch zu transformieren.
+es wird möglicherweiße SQLCipher benutzt um den Punkt aufzugreifen, dass man die Daten auch lokal verschlüsseln sollte.
+aussage "traditionelle Desktop-Anwendung führt Programm und Daten überwiegend lokal aus." zu pauschal.
+besser : offline first anstatt traditionelle Desktop-Anwendung.

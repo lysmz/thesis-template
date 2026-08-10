@@ -160,24 +160,35 @@ Electron bietet eine technische Grundlage für Isolation, erzwingt sie aber nich
 - Durch die Umsetzung als Gesamtpaket steigt der Wert der Arbeit — jeder Leser mit spezifischen Teilproblemen profitiert.
 - Local-First adressiert die Defizite der Cloud-Web-Architektur (Latenz, Verfügbarkeit, Datenschutz).
 
-## 2.4 Sicherheit in lokalen Desktop-Anwendungen
+## 2.4 Sicherheit lokaler Desktop-Anwendungen
 
-### 2.4.1 Threat-Modelle für lokal ausgeführte Anwendungen
+> 2.2.3 erklärt das technische Sicherheitsmodell von Electron. 2.4 analysiert darauf aufbauend Bedrohungen, KI-spezifische Risiken und Anforderungen an das Zielartefakt. Die Electron-Mechanismen werden hier nicht erneut als Grundlagenkapitel beschrieben.
 
-- Andere Bedrohungen als in Web-Apps: lokale Dateisystem-Zugriffe, ausführbarer Code, Malware-Vektor durch Electron.
-- Relevante Angriffsszenarien: XSS im Renderer → RCE im Main Process, Path-Traversal, Injection.
+### 2.4.1 Bedrohungsmodell und Angriffsflächen
 
-### 2.4.2 Relevante OWASP-Kategorien für KI-Code
+- Schutzobjekte: lokale Studienplandaten, SQLite-Datenbank, Konfiguration, Zugangsdaten und Anwendungsintegrität.
+- Angriffsflächen: Renderer, Preload, IPC, Dateisystem, externe Links, Netzwerkzugriffe, native Module sowie Paketierungs- und Updateprozesse.
+- Andere Vertrauensannahmen als in Web-Apps: Daten, Code und Laufzeit befinden sich teilweise auf dem Endgerät.
+- Angriffskette als Anwendungsszenario: manipulierte Renderer-Eingabe → zu weitreichende Preload-/IPC-Schnittstelle → privilegierte Dateisystem- oder Prozessoperation.
 
-- Welche OWASP Top 10 Risiken sind bei KI-Code besonders wahrscheinlich? (Injection, Broken Access Control, Security Misconfiguration).
-- Besonderheit: KI-Code neigt zu hard-coded Secrets, unsicheren Dependencies, fehlender Input-Validierung.
+### 2.4.2 Sicherheitsrisiken KI-generierter Anwendungen
 
-### 2.4.3 Härtungsmechanismen
+- Fehlende Eingabevalidierung, überprivilegierte Hilfsfunktionen und unsichere Standardkonfigurationen.
+- Fehlende Trennung von Präsentation, Geschäftslogik und Infrastruktur.
+- Hardcodierte Geheimnisse, unzureichende Fehlerbehandlung und fehlende Zugriffskontrollen.
+- Unsichere oder halluzinierte Abhängigkeiten als Risiko für die Softwarelieferkette.
+- Einordnung anhand relevanter Kategorien wie Injection, Broken Access Control und Security Misconfiguration.
 
-- Content Security Policy (CSP) für Electron.
-- Context Isolation + Preload + IPC als Sicherheitsbarriere.
-- Least-Privilege-Prinzip für Dateisystemzugriffe.
-- Vermeidung von `nodeIntegration: true` und `contextIsolation: false`.
+### 2.4.3 Sicherheitsanforderungen an das Zielartefakt
+
+- Kein direkter Dateisystem-, Native- oder allgemeiner Node.js-Zugriff aus dem Renderer.
+- Minimale, fachlich definierte Schnittstellen für privilegierte Operationen.
+- Erneute Validierung jeder Renderer-Eingabe vor privilegierten Operationen.
+- Begrenzung von Dateipfaden, Dateitypen und erlaubten Operationen.
+- Keine sensiblen Daten in Quellcode, Bundles oder Fehlermeldungen.
+- Nachvollziehbare und reproduzierbare Abhängigkeiten.
+- Kontrollierte Fehlerbehandlung ohne Offenlegung interner Pfade oder Stacktraces.
+- Überprüfbarkeit durch statische Analysen, Konfigurationskontrollen und Tests.
 
 ## 2.5 Zusammenfassung und Forschungslücke
 
