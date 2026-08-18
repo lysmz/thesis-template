@@ -2,7 +2,7 @@
 
 Der Entwurf ist konzeptionell stark und für einen Grundlagenabschnitt bereits ungewöhnlich reflektiert. Besonders gelungen sind die Trennung von Desktop-Runtime, lokaler Persistenz und Local-First-Paradigma, die differenzierte Darstellung der sieben Ideale sowie die wiederholte Einschränkung, dass Electron, SQLite oder Offlinefähigkeit allein noch keine Local-First-Architektur begründen.
 
-Der zentrale Überarbeitungsbedarf liegt nicht in der Grundargumentation, sondern in der wissenschaftlichen Absicherung und Verdichtung. Im aktuellen `thesis/refs.bib` fehlen die im Text verwendeten Schlüssel `kleppmann2019localfirst` und `sqlite2025about`. Außerdem werden zahlreiche technische, sicherheitsbezogene und architekturvergleichende Aussagen nur teilweise oder gar nicht belegt. Die Abschnitte 2.3.2 bis 2.3.4 wiederholen mehrere Kernaussagen zu lokaler Primärpersistenz, optionaler Synchronisation und der fehlenden Gleichsetzung von Electron mit Local First.
+Der zentrale Überarbeitungsbedarf liegt nicht in der Grundargumentation, sondern in der wissenschaftlichen Absicherung und Verdichtung. Im aktuellen `thesis/refs.bib` fehlen die im Text verwendeten Schlüssel `kleppmann2019localfirst` und `sqlite2025about`. Außerdem werden zahlreiche technische, sicherheitsbezogene und architekturvergleichende Aussagen nur teilweise oder gar nicht belegt. Die Abschnitte 2.4.2 bis 2.4.4 wiederholen mehrere Kernaussagen zu lokaler Primärpersistenz, optionaler Synchronisation und der fehlenden Gleichsetzung von Electron mit Local First.
 
 **Gesamtbewertung:** fachlich tragfähiger Entwurf mit guter Überarbeitungsbasis; vor der Überführung in LaTeX sind Quellenapparat, Terminologie und Redundanzen systematisch zu überarbeiten. Empfehlung: **draft-quality / gezielte substanzielle Überarbeitung**, nicht vollständige Neufassung.
 
@@ -10,7 +10,7 @@ Der zentrale Überarbeitungsbedarf liegt nicht in der Grundargumentation, sonder
 
 - Die definitorische Eingangsdifferenzierung zwischen Desktop-Runtime, lokaler Persistenz und Local-First-Paradigma verhindert einen häufigen Kategorienfehler.
 - Die sieben Ideale werden nicht lediglich aufgezählt, sondern mit Konsequenzen für Datenhaltung, Offlinebetrieb, Kollaboration, Datenportabilität und Sicherheit erläutert.
-- Der Entwurf vermeidet die problematische Gleichsetzung von lokaler Datenhaltung und Local First. Die Aussagen in den Abschnitten 2.3.1 und 2.3.2 sind an dieser Stelle besonders präzise.
+- Der Entwurf vermeidet die problematische Gleichsetzung von lokaler Datenhaltung und Local First. Die Aussagen in den Abschnitten 2.4.1 und 2.4.2 sind an dieser Stelle besonders präzise.
 - Die Grenzen des Paradigmas werden ausdrücklich benannt: Local First ist nicht automatisch sicherer, CRDTs lösen nicht jede fachliche Konfliktfrage, und Kollaboration ist für eine Einzelplatzanwendung nicht zwingend.
 - Die Verbindung zur Fallstudie ist konkret: lokale Primärpersistenz, SQLite, Schema-Migrationen, IPC, Validierung und Backups werden als Transformationsfolgen sichtbar gemacht.
 - Die Abgrenzung zwischen technischer Grundlage und Zielanforderung ist vielfach bereits angelegt, insbesondere durch Formulierungen wie „für die vorliegende Arbeit“ und „für die Fallstudie“.
@@ -20,7 +20,7 @@ Der zentrale Überarbeitungsbedarf liegt nicht in der Grundargumentation, sonder
 1. **Quellenapparat vervollständigen und Reichweite prüfen.** Die beiden verwendeten Zitatschlüssel sind in der aktuellen `refs.bib` nicht vorhanden. Zudem deckt die Kleppmann-Arbeit nicht automatisch alle Aussagen zu SQLite, Backups, Migrationen, Electron-IPC oder den wirtschaftlichen Vor- und Nachteilen cloudzentrierter Systeme ab. Die Belegtypen müssen getrennt werden: theoretische Definition, Produktdokumentation, eigene Fallstudienbeobachtung und normative Zielanforderung.
 2. **„Cloud-Native“ terminologisch von „cloudzentriert“ abgrenzen.** Der Text behandelt überwiegend eine cloudzentrierte beziehungsweise serverabhängige Referenzarchitektur. „Cloud-native“ bezeichnet dagegen einen weitergehenden Architektur- und Entwicklungsansatz. Der Begriff sollte definiert oder im Abschnittstitel durch den tatsächlich behandelten Begriff ersetzt werden.
 3. **Local First und Offline-First sauber operationalisieren.** Die Unterscheidung ist plausibel, bleibt aber ohne explizite Definition der Mindestkriterien. Es sollte festgelegt werden, welche Kernfunktionen des Studienplaners ohne Netzwerk dauerhaft verfügbar sein müssen und welche Eigenschaften lediglich wünschenswert sind.
-4. **Theorie, Fallstudie und Zielarchitektur sichtbar trennen.** Ab Absatz 2.3.3 wechseln allgemeine Aussagen, Beobachtungen zur Web-Referenzarchitektur und Anforderungen an das Zielartefakt teilweise ohne Kennzeichnung. Dadurch ist nicht immer klar, ob eine Aussage aus Literatur stammt, im Ausgangscode beobachtet wurde oder als Designentscheidung vorgeschlagen wird.
+4. **Theorie, Fallstudie und Zielarchitektur sichtbar trennen.** Ab Absatz 2.4.3 wechseln allgemeine Aussagen, Beobachtungen zur Web-Referenzarchitektur und Anforderungen an das Zielartefakt teilweise ohne Kennzeichnung. Dadurch ist nicht immer klar, ob eine Aussage aus Literatur stammt, im Ausgangscode beobachtet wurde oder als Designentscheidung vorgeschlagen wird.
 5. **Redundanzen reduzieren.** Primärpersistenz statt Cache, optionale Synchronisation, die Nichtgleichsetzung von Electron und Local First sowie die Verlagerung von Verantwortung werden mehrfach neu formuliert. Eine Verdichtung würde die hohe fachliche Qualität erhalten und den Abschnitt deutlich lesbarer machen.
 6. **SQLite-, Migrations- und Bereitstellungsdetails präzisieren.** Aussagen zu ACID, transaktionalen Migrationen, Drizzle und dem Lebenszyklus lokaler Datenbanken müssen auf die konkret eingesetzte SQLite-/Drizzle-Konfiguration bezogen werden. Die Datenbankdatei ist außerdem von den schreibbaren Benutzerdaten vom unveränderlichen Installationsverzeichnis zu unterscheiden.
 
@@ -38,7 +38,7 @@ Die Unterscheidung zwischen Offline-First und Local First ist sinnvoll, sollte a
 
 ## Argumentationsstruktur
 
-Die Makrostruktur ist schlüssig: Definition und Ideale, technische Konsequenzen, Abgrenzung und schließlich Relevanz für die Transformation. Der Abschnitt 2.3.4 bildet einen guten Übergang zu Analyse und Entwurf.
+Die Makrostruktur ist schlüssig: Definition und Ideale, technische Konsequenzen, Abgrenzung und schließlich Relevanz für die Transformation. Der Abschnitt 2.4.4 bildet einen guten Übergang zu Analyse und Entwurf.
 
 Die Argumentation könnte dennoch stärker zwischen drei Ebenen unterscheiden:
 
@@ -70,9 +70,9 @@ Besonders die folgenden Aussagegruppen benötigen eine Beleg- oder Herkunftsents
 
 ## DSR-Passung und Forschungsfragen
 
-Als theoretischer Hintergrundabschnitt muss 2.3 keinen vollständigen DSR-Zyklus dokumentieren. Der Übergang zur Transformation ist jedoch gut vorbereitet. Der Text benennt bereits ein Problem, leitet architektonische Verschiebungen ab und deutet spätere Sicherheits- und Evaluationsfragen an.
+Als theoretischer Hintergrundabschnitt muss 2.4 keinen vollständigen DSR-Zyklus dokumentieren. Der Übergang zur Transformation ist jedoch gut vorbereitet. Der Text benennt bereits ein Problem, leitet architektonische Verschiebungen ab und deutet spätere Sicherheits- und Evaluationsfragen an.
 
-Für die Anschlusskapitel sollten die in 2.3 formulierten Kriterien operationalisiert werden. Für das Einzelplatzszenario bieten sich insbesondere überprüfbare Kriterien an: Kernfunktionen ohne Netzwerk, dauerhafte lokale Schreibvorgänge, Wiederverwendung vorhandener Datenbestände nach Migration, kontrolliertes Verhalten bei nicht unterstützten Datenbankständen und nachvollziehbare Backup-/Wiederherstellungsprozesse. Die Kriterien sollten nicht als bereits erfüllte Eigenschaften des Zielartefakts formuliert werden, solange die Implementierung und Evaluation noch nicht vorliegen.
+Für die Anschlusskapitel sollten die in 2.4 formulierten Kriterien operationalisiert werden. Für das Einzelplatzszenario bieten sich insbesondere überprüfbare Kriterien an: Kernfunktionen ohne Netzwerk, dauerhafte lokale Schreibvorgänge, Wiederverwendung vorhandener Datenbestände nach Migration, kontrolliertes Verhalten bei nicht unterstützten Datenbankständen und nachvollziehbare Backup-/Wiederherstellungsprozesse. Die Kriterien sollten nicht als bereits erfüllte Eigenschaften des Zielartefakts formuliert werden, solange die Implementierung und Evaluation noch nicht vorliegen.
 
 Der Bezug zu FF1 und FF3 ist stark: Der Abschnitt liefert das Zielbild für die framework-agnostische Transformation und motiviert lokale relationale Persistenz sowie Migrationen. Zu FF2 und FF4 besteht ein indirekter, aber sinnvoller Übergang über IPC, lokale Geschäftslogik und Sicherheitsverantwortung. Die konkreten Refactoring-Muster und Sicherheitsbefunde gehören jedoch in die späteren Analyse-, Entwurfs- und Evaluationskapitel.
 
@@ -117,7 +117,7 @@ Diese Wiederholungen sind nicht sachlich falsch. Zwei bis drei zentrale Aussagen
 
 > **Zitat:** „Bei strukturierten Daten ist eine rein textbasierte Zusammenführung oft unzureichend“
 
-- **Fundstelle:** Abschnitt 2.3.1, Absatz zum vierten Ideal
+- **Fundstelle:** Abschnitt 2.4.1, Absatz zum vierten Ideal
 - **Kategorie:** fachlich / Quelle
 - **Schweregrad:** wichtig
 - **Problem:** Die Aussage ist technisch plausibel, verallgemeinert aber die Eignung textbasierter Merge-Verfahren über unterschiedliche Datenmodelle hinweg.
@@ -126,7 +126,7 @@ Diese Wiederholungen sind nicht sachlich falsch. Zwei bis drei zentrale Aussagen
 
 > **Zitat:** „Dafür müssen Daten in einem nachvollziehbaren Format gespeichert, exportiert und gegebenenfalls in zukünftige Schema-Versionen überführt werden können.“
 
-- **Fundstelle:** Abschnitt 2.3.1, fünftes Ideal
+- **Fundstelle:** Abschnitt 2.4.1, fünftes Ideal
 - **Kategorie:** fachlich / Quelle
 - **Schweregrad:** wichtig
 - **Problem:** Langfristige Datenzugänglichkeit und Migration werden sinnvoll zusammengeführt, aber die konkrete Forderung nach Schema-Überführung ist eine technische Ausarbeitung der Arbeit und nicht ohne Weiteres eine direkte Aussage der genannten Local-First-Quelle.
@@ -135,7 +135,7 @@ Diese Wiederholungen sind nicht sachlich falsch. Zwei bis drei zentrale Aussagen
 
 > **Zitat:** „Local First ist jedoch nicht automatisch sicherer.“
 
-- **Fundstelle:** Abschnitt 2.3.1, sechstes Ideal
+- **Fundstelle:** Abschnitt 2.4.1, sechstes Ideal
 - **Kategorie:** fachlich / Quelle
 - **Schweregrad:** wichtig
 - **Problem:** Der wichtige Sicherheitsvorbehalt wird nicht belegt. Außerdem sollte zwischen geringerer zentraler Datensammlung, Schutz des Endgeräts und Sicherheit der konkreten Anwendung unterschieden werden.
@@ -144,7 +144,7 @@ Diese Wiederholungen sind nicht sachlich falsch. Zwei bis drei zentrale Aussagen
 
 > **Zitat:** „Offline-First und Local First sind eng verwandte, aber nicht vollständig deckungsgleiche Begriffe.“
 
-- **Fundstelle:** Abschnitt 2.3.2, Absatz 1
+- **Fundstelle:** Abschnitt 2.4.2, Absatz 1
 - **Kategorie:** begrifflich / Quelle
 - **Schweregrad:** wichtig
 - **Problem:** Die Abgrenzung ist zentral für die Arbeit, wird aber als etablierte Definition präsentiert, ohne eine Quelle oder eine explizite Arbeitsdefinition anzugeben.
@@ -153,7 +153,7 @@ Diese Wiederholungen sind nicht sachlich falsch. Zwei bis drei zentrale Aussagen
 
 > **Zitat:** „SQLite arbeitet als serverlose und konfigurationsarme Bibliothek innerhalb des Anwendungsprozesses und speichert eine vollständige relationale Datenbank in einer Datei.“
 
-- **Fundstelle:** Abschnitt 2.3.2, Absatz zu SQLite
+- **Fundstelle:** Abschnitt 2.4.2, Absatz zu SQLite
 - **Kategorie:** fachlich / Quelle
 - **Schweregrad:** wichtig
 - **Problem:** Die Aussage ist als SQLite-Grundbeschreibung geeignet, aber der verwendete Schlüssel `sqlite2025about` fehlt in der aktuellen `refs.bib`. „In einer Datei“ sollte außerdem nicht mit einem beliebigen Speicherort oder automatisch sicherem Dateibetrieb gleichgesetzt werden.
@@ -162,7 +162,7 @@ Diese Wiederholungen sind nicht sachlich falsch. Zwei bis drei zentrale Aussagen
 
 > **Zitat:** „Die Datenbank unterstützt ACID-Transaktionen“
 
-- **Fundstelle:** Abschnitt 2.3.2, Absatz zu SQLite
+- **Fundstelle:** Abschnitt 2.4.2, Absatz zu SQLite
 - **Kategorie:** fachlich / Quelle
 - **Schweregrad:** wichtig
 - **Problem:** Die Aussage braucht die fehlende SQLite-Quelle und sollte die Betriebsbedingungen berücksichtigen. ACID-Eigenschaften der Engine sind nicht gleichbedeutend mit einer vollständigen Backup- oder Wiederherstellungsgarantie.
@@ -171,7 +171,7 @@ Diese Wiederholungen sind nicht sachlich falsch. Zwei bis drei zentrale Aussagen
 
 > **Zitat:** „Migrationen sollten möglichst in transaktionalen Grenzen ausgeführt werden“
 
-- **Fundstelle:** Abschnitt 2.3.2, Absatz zu Schema-Migrationen
+- **Fundstelle:** Abschnitt 2.4.2, Absatz zu Schema-Migrationen
 - **Kategorie:** fachlich / Produktdetail
 - **Schweregrad:** wichtig
 - **Problem:** Hier werden allgemeine Migrationspraxis, SQLite-Verhalten und die konkrete Drizzle-Ausführung vermischt. Nicht jede Änderung und nicht jeder Migration Runner verhält sich identisch.
@@ -180,7 +180,7 @@ Diese Wiederholungen sind nicht sachlich falsch. Zwei bis drei zentrale Aussagen
 
 > **Zitat:** „Insbesondere bei lokalen Anwendungen müssen Migrationen mit dem Anwendungspaket ausgeliefert, beim Start kontrolliert angewendet und für alle unterstützten Ausgangsversionen getestet werden.“
 
-- **Fundstelle:** Abschnitt 2.3.2, Absatz zu Schema-Migrationen
+- **Fundstelle:** Abschnitt 2.4.2, Absatz zu Schema-Migrationen
 - **Kategorie:** Struktur / fachlich
 - **Schweregrad:** wichtig
 - **Problem:** Die Empfehlung ist für das Zielartefakt plausibel, wird aber als allgemeine Notwendigkeit formuliert. Sie enthält bereits konkrete Designentscheidungen zur Paketierung, zum Startverhalten und zur Teststrategie.
@@ -189,7 +189,7 @@ Diese Wiederholungen sind nicht sachlich falsch. Zwei bis drei zentrale Aussagen
 
 > **Zitat:** „Abgrenzung zu Cloud-Native und traditionellen Desktop-Anwendungen“
 
-- **Fundstelle:** Überschrift 2.3.3
+- **Fundstelle:** Überschrift 2.4.3
 - **Kategorie:** begrifflich / Struktur
 - **Schweregrad:** kritisch
 - **Problem:** Der Abschnitt definiert Cloud-Native nicht und behandelt im Text hauptsächlich Cloud-Zentrierung beziehungsweise Serverabhängigkeit. Dadurch entsteht ein Terminologierisiko für die gesamte Arbeit.
@@ -198,7 +198,7 @@ Diese Wiederholungen sind nicht sachlich falsch. Zwei bis drei zentrale Aussagen
 
 > **Zitat:** „Local First kann daher als Hybrid zwischen den beiden Modellen verstanden werden.“
 
-- **Fundstelle:** Abschnitt 2.3.3, Absatz 3
+- **Fundstelle:** Abschnitt 2.4.3, Absatz 3
 - **Kategorie:** begrifflich / fachlich
 - **Schweregrad:** wichtig
 - **Problem:** Die Formulierung kann den Eindruck erwecken, Local First setze stets einen Cloud-Dienst voraus. Das widerspricht der später korrekt genannten Möglichkeit eines reinen Einzelbenutzer-/Einzelgerätszenarios.
@@ -207,7 +207,7 @@ Diese Wiederholungen sind nicht sachlich falsch. Zwei bis drei zentrale Aussagen
 
 > **Zitat:** „Electron stellt die Ausführungsumgebung und den kontrollierten Zugriff auf Betriebssystemressourcen bereit.“
 
-- **Fundstelle:** Abschnitt 2.3.3, letzter Absatz
+- **Fundstelle:** Abschnitt 2.4.3, letzter Absatz
 - **Kategorie:** fachlich / Produktdetail
 - **Schweregrad:** wichtig
 - **Problem:** Electron stellt APIs und Prozessgrenzen bereit, kontrolliert den Zugriff aber nicht automatisch im Sinne einer wirksamen Sicherheitsgarantie. Die Kontrolle entsteht erst durch Konfiguration, Preload-/IPC-Design und Validierung.
@@ -216,7 +216,7 @@ Diese Wiederholungen sind nicht sachlich falsch. Zwei bis drei zentrale Aussagen
 
 > **Zitat:** „Die lokale Persistenz darf nicht direkt aus dem Renderer-Prozess heraus angesprochen werden.“
 
-- **Fundstelle:** Abschnitt 2.3.4, Absatz 3
+- **Fundstelle:** Abschnitt 2.4.4, Absatz 3
 - **Kategorie:** fachlich / Struktur
 - **Schweregrad:** wichtig
 - **Problem:** Als Sicherheitsanforderung für die Zielarchitektur ist die Aussage überzeugend. Als allgemeine Aussage über jede Electron-Anwendung ist sie zu absolut und sollte als bewusste Designentscheidung der Arbeit erscheinen.
@@ -225,7 +225,7 @@ Diese Wiederholungen sind nicht sachlich falsch. Zwei bis drei zentrale Aussagen
 
 > **Zitat:** „Für die Fallstudie des Studienplaners steht zunächst ein lokales Einzelplatzszenario im Mittelpunkt.“
 
-- **Fundstelle:** Abschnitt 2.3.4, Absatz 4
+- **Fundstelle:** Abschnitt 2.4.4, Absatz 4
 - **Kategorie:** Scope / Struktur
 - **Schweregrad:** wichtig
 - **Problem:** Diese zentrale Eingrenzung ist nicht als aus Anforderungen oder einer dokumentierten Designentscheidung abgeleitet ausgewiesen. Sie steuert jedoch, ob Synchronisation und Kollaboration als Ziel oder Nichtziel gelten.
@@ -234,7 +234,7 @@ Diese Wiederholungen sind nicht sachlich falsch. Zwei bis drei zentrale Aussagen
 
 > **Zitat:** „Die Anwendung muss Datenbanken sicher anlegen und aktualisieren, Fehler bei Schreibvorgängen kontrolliert behandeln, Backups ermöglichen und mit beschädigten oder nicht unterstützten Datenbankständen umgehen.“
 
-- **Fundstelle:** Abschnitt 2.3.4, letzter Absatz vor der Schlussfolgerung
+- **Fundstelle:** Abschnitt 2.4.4, letzter Absatz vor der Schlussfolgerung
 - **Kategorie:** fachlich / Struktur
 - **Schweregrad:** wichtig
 - **Problem:** Die Aufzählung enthält wertvolle Zielanforderungen, geht aber über die bisher explizit begründeten Local-First-Ideale hinaus. „Sicher“ und „kontrolliert“ sind zudem noch nicht operationalisiert.
@@ -262,7 +262,7 @@ Diese Wiederholungen sind nicht sachlich falsch. Zwei bis drei zentrale Aussagen
 ## B: Wichtig
 
 - Local First und Offline-First als Arbeitsdefinitionen mit klaren Mindestkriterien formulieren.
-- Abschnitt 2.3.3 und 2.3.4 sprachlich in Literaturbefund, technische Konsequenz, Fallstudienbeobachtung und Zielarchitektur aufteilen.
+- Abschnitt 2.4.3 und 2.4.4 sprachlich in Literaturbefund, technische Konsequenz, Fallstudienbeobachtung und Zielarchitektur aufteilen.
 - Wiederholungen zu Primärpersistenz, optionaler Synchronisation, Electron und Sicherheitsverantwortung kürzen.
 - SQLite-Datei, Benutzerverzeichnis, Installationsressourcen, Migration Runner, Transaktionsgrenzen und Wiederherstellung für die konkrete Zielarchitektur prüfen.
 - Aus den letzten Absätzen konkrete, später evaluierbare Kriterien für Offline-Kernfunktionen, Migration, Datenintegrität, Backup und Fehlerbehandlung ableiten.

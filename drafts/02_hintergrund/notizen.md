@@ -662,7 +662,7 @@ Als Ersatz für die letzten beiden Absätze bietet sich etwa diese Fassung an:
 **Kurz gesagt:** Der Draft ist schon überzeugend. Der größte Gewinn entsteht, wenn du absolute Aussagen abschwächst, das Sicherheitsmodell präziser aufschlüsselst und die Runtime-Entscheidung anhand expliziter Auswahlkriterien argumentierst.
 
 
-# zu 2.3
+# zu 2.4
 
 anmerkungen : es wird eine falsche annahme getroffen über das feature set the referenzapp in zeile 192. die app verfügt über ein gruppen feature das echtzeitkollaboration ermöglichen soll, dies gilt es auch zu transformieren.
 es wird möglicherweiße SQLCipher benutzt um den Punkt aufzugreifen, dass man die Daten auch lokal verschlüsseln sollte.

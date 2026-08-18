@@ -134,44 +134,18 @@ Electron bietet eine technische Grundlage für Isolation, erzwingt sie aber nich
 - Die Begriffe XSS, RCE, IPC, Preload und Capability einmal definieren und anschließend konsistent verwenden.
 - Sicherheitsmaßnahmen nicht als vollständig oder absolut wirksam darstellen; verbleibende Risiken und Fehlkonfigurationen ausdrücklich benennen.
 
-## 2.3 Das Local-First-Paradigma
+## 2.3 Sicherheit lokaler Desktop-Anwendungen
 
-### 2.3.1 Kernprinzipien nach Kleppmann et al.
+> 2.2.3 erklärt das technische Sicherheitsmodell von Electron. 2.3 analysiert darauf aufbauend Bedrohungen, KI-spezifische Risiken und Anforderungen an das Zielartefakt. Die Electron-Mechanismen werden hier nicht erneut als Grundlagenkapitel beschrieben.
 
-- Die sieben Ideale des Local-First: Offline-First, Kollaboration, Datensouveränität, etc.
-- Abgrenzung zu Cloud-Native: lokale Datenhaltung als Primärquelle, Cloud optional.
-- Relevante Techniken: CRDTs, Operational Transformation, Merge-Konzepte.
-
-### 2.3.2 Lokale Datenhaltung und Offline-First
-
-- SQLite als lokale Datenbank: Vorteile (zero-config, embedded, ACID, gut getestet).
-- Schema-Migrationen: Notwendigkeit bei komplexen relationalen Daten.
-- Synchronisationsstrategien (falls Cloud-Anbindung später gewünscht).
-
-### 2.3.3 Abgrenzung zu Cloud-Native und traditionellen Desktop-Apps
-
-- Cloud-Native: Server-zentriert, Browser-Client, immer online.
-- Traditionelle Desktop-Apps (z.B. WinForms, WPF): nativer Code, keine Web-Technologien.
-- Local-First als Hybrid: Web-UI + lokale Datenhaltung + optionale Synchronisation.
-
-### 2.3.4 Relevanz für das Transformationsszenario
-
-- Local-First schließt automatisch Eigenschaften ein, die für viele Leser einzeln relevant sein können (Offline, Datensouveränität, Performance).
-- Durch die Umsetzung als Gesamtpaket steigt der Wert der Arbeit — jeder Leser mit spezifischen Teilproblemen profitiert.
-- Local-First adressiert die Defizite der Cloud-Web-Architektur (Latenz, Verfügbarkeit, Datenschutz).
-
-## 2.4 Sicherheit lokaler Desktop-Anwendungen
-
-> 2.2.3 erklärt das technische Sicherheitsmodell von Electron. 2.4 analysiert darauf aufbauend Bedrohungen, KI-spezifische Risiken und Anforderungen an das Zielartefakt. Die Electron-Mechanismen werden hier nicht erneut als Grundlagenkapitel beschrieben.
-
-### 2.4.1 Bedrohungsmodell und Angriffsflächen
+### 2.3.1 Bedrohungsmodell und Angriffsflächen
 
 - Schutzobjekte: lokale Studienplandaten, SQLite-Datenbank, Konfiguration, Zugangsdaten und Anwendungsintegrität.
 - Angriffsflächen: Renderer, Preload, IPC, Dateisystem, externe Links, Netzwerkzugriffe, native Module sowie Paketierungs- und Updateprozesse.
 - Andere Vertrauensannahmen als in Web-Apps: Daten, Code und Laufzeit befinden sich teilweise auf dem Endgerät.
 - Angriffskette als Anwendungsszenario: manipulierte Renderer-Eingabe → zu weitreichende Preload-/IPC-Schnittstelle → privilegierte Dateisystem- oder Prozessoperation.
 
-### 2.4.2 Sicherheitsrisiken KI-generierter Anwendungen
+### 2.3.2 Sicherheitsrisiken KI-generierter Anwendungen
 
 - Fehlende Eingabevalidierung, überprivilegierte Hilfsfunktionen und unsichere Standardkonfigurationen.
 - Fehlende Trennung von Präsentation, Geschäftslogik und Infrastruktur.
@@ -179,7 +153,7 @@ Electron bietet eine technische Grundlage für Isolation, erzwingt sie aber nich
 - Unsichere oder halluzinierte Abhängigkeiten als Risiko für die Softwarelieferkette.
 - Einordnung anhand relevanter Kategorien wie Injection, Broken Access Control und Security Misconfiguration.
 
-### 2.4.3 Sicherheitsanforderungen an das Zielartefakt
+### 2.3.3 Sicherheitsanforderungen an das Zielartefakt
 
 - Kein direkter Dateisystem-, Native- oder allgemeiner Node.js-Zugriff aus dem Renderer.
 - Minimale, fachlich definierte Schnittstellen für privilegierte Operationen.
@@ -189,6 +163,32 @@ Electron bietet eine technische Grundlage für Isolation, erzwingt sie aber nich
 - Nachvollziehbare und reproduzierbare Abhängigkeiten.
 - Kontrollierte Fehlerbehandlung ohne Offenlegung interner Pfade oder Stacktraces.
 - Überprüfbarkeit durch statische Analysen, Konfigurationskontrollen und Tests.
+
+## 2.4 Das Local-First-Paradigma
+
+### 2.4.1 Kernprinzipien nach Kleppmann et al.
+
+- Die sieben Ideale des Local-First: Offline-First, Kollaboration, Datensouveränität, etc.
+- Abgrenzung zu Cloud-Native: lokale Datenhaltung als Primärquelle, Cloud optional.
+- Relevante Techniken: CRDTs, Operational Transformation, Merge-Konzepte.
+
+### 2.4.2 Lokale Datenhaltung und Offline-First
+
+- SQLite als lokale Datenbank: Vorteile (zero-config, embedded, ACID, gut getestet).
+- Schema-Migrationen: Notwendigkeit bei komplexen relationalen Daten.
+- Synchronisationsstrategien (falls Cloud-Anbindung später gewünscht).
+
+### 2.4.3 Abgrenzung zu Cloud-Native und traditionellen Desktop-Apps
+
+- Cloud-Native: Server-zentriert, Browser-Client, immer online.
+- Traditionelle Desktop-Apps (z.B. WinForms, WPF): nativer Code, keine Web-Technologien.
+- Local-First als Hybrid: Web-UI + lokale Datenhaltung + optionale Synchronisation.
+
+### 2.4.4 Relevanz für das Transformationsszenario
+
+- Local-First schließt automatisch Eigenschaften ein, die für viele Leser einzeln relevant sein können (Offline, Datensouveränität, Performance).
+- Durch die Umsetzung als Gesamtpaket steigt der Wert der Arbeit — jeder Leser mit spezifischen Teilproblemen profitiert.
+- Local-First adressiert die Defizite der Cloud-Web-Architektur (Latenz, Verfügbarkeit, Datenschutz).
 
 ## 2.5 Zusammenfassung und Forschungslücke
 

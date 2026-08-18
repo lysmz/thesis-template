@@ -4,7 +4,7 @@
 
 Electron ist keine automatisch sichere Ausführungsumgebung. Die Runtime stellt jedoch Prozess- und Kontextgrenzen bereit, mit denen privilegierte Desktop-Funktionen von nicht privilegiertem Web-Code getrennt werden können. Die Wirksamkeit dieser Grenzen hängt von der Konfiguration der Anwendung, der Gestaltung der Preload- und IPC-Schnittstellen sowie von der Vertrauenswürdigkeit der geladenen Inhalte ab~\cite{electron2026docs}.
 
-Dieser Abschnitt beschreibt die technischen Grundlagen dieses Sicherheitsmodells. Die Bedrohungen für lokale Desktop-Anwendungen, die spezifischen Risiken KI-generierten Codes und die daraus abgeleiteten Anforderungen werden anschließend in Abschnitt 2.4 behandelt.
+Dieser Abschnitt beschreibt die technischen Grundlagen dieses Sicherheitsmodells. Die Bedrohungen für lokale Desktop-Anwendungen, die spezifischen Risiken KI-generierten Codes und die daraus abgeleiteten Anforderungen werden anschließend in Abschnitt 2.3 behandelt.
 
 ## Prozesse und Vertrauensgrenzen
 
@@ -38,7 +38,7 @@ Inter-Process Communication (IPC) verbindet den Renderer mit dem Main-Prozess. J
 
 Die Kanäle sollten deshalb eine eindeutige fachliche Verantwortung besitzen. Das Preload-Skript sollte nicht als allgemeiner Transport für beliebige Renderer-Anfragen dienen, sondern nur klar definierte Operationen vermitteln. Die konkrete Validierung von Datentypen, Wertebereichen, Ressourcenbezügen und Dateipfaden wird im Main-Prozess beziehungsweise in der privilegierten Anwendungsschicht durchgeführt.
 
-IPC ist damit nicht lediglich ein technisches Transportmittel. Es bildet einen API-Vertrag zwischen zwei unterschiedlich privilegierten Ausführungskontexten. Seine konkrete Absicherung und die daraus folgenden Prüfanforderungen werden in Abschnitt 2.4 als Teil des Bedrohungsmodells und der Sicherheitsanforderungen wieder aufgegriffen.
+IPC ist damit nicht lediglich ein technisches Transportmittel. Es bildet einen API-Vertrag zwischen zwei unterschiedlich privilegierten Ausführungskontexten. Seine konkrete Absicherung und die daraus folgenden Prüfanforderungen werden in Abschnitt 2.3 als Teil des Bedrohungsmodells und der Sicherheitsanforderungen wieder aufgegriffen.
 
 ## Geladene Inhalte und zusätzliche Schutzschichten
 
@@ -50,4 +50,4 @@ Eine Content Security Policy (CSP) kann die Ausführung unerwarteter Skripte und
 
 Für die Transformation einer Web-Anwendung in eine Electron-Anwendung folgt daraus, dass der vorhandene Web-Code nicht unverändert in einen privilegierten Prozess verschoben werden darf. Der Renderer übernimmt Darstellung und nicht privilegierte Interaktion. Das Preload-Skript stellt minimale, fachlich definierte Fähigkeiten bereit. Der Main-Prozess führt privilegierte Operationen über kontrollierte Schnittstellen aus.
 
-Electron bietet somit eine technische Grundlage für die Trennung von Web-Inhalt und Desktop-Funktionalität, erzwingt diese Trennung aber nicht. Die sicherheitsrelevante Transformationsleistung besteht darin, die Vertrauensgrenze explizit zu entwerfen und die Übergänge zwischen den Ausführungskontexten kontrollierbar zu machen. Welche Bedrohungen daraus für das konkrete Artefakt entstehen und welche Anforderungen sich daraus ableiten, wird in Abschnitt 2.4 untersucht.
+Electron bietet somit eine technische Grundlage für die Trennung von Web-Inhalt und Desktop-Funktionalität, erzwingt diese Trennung aber nicht. Die sicherheitsrelevante Transformationsleistung besteht darin, die Vertrauensgrenze explizit zu entwerfen und die Übergänge zwischen den Ausführungskontexten kontrollierbar zu machen. Welche Bedrohungen daraus für das konkrete Artefakt entstehen und welche Anforderungen sich daraus ableiten, wird in Abschnitt 2.3 untersucht.
