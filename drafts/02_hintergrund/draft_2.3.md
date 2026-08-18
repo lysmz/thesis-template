@@ -187,10 +187,8 @@ Stattdessen werden fachlich begrenzte Operationen über die in Abschnitt 2.2.3 b
 Die Eingaben müssen dort validiert und auf die erlaubten lokalen Operationen begrenzt werden.
 Damit verbindet das Local-First-Zielbild die Datenarchitektur mit der Sicherheitsarchitektur der Electron-Anwendung.
 
-Für die Fallstudie des Studienplaners steht zunächst ein lokales Einzelplatzszenario im Mittelpunkt.
 Daraus folgt, dass die lokale Primärpersistenz, Offlinefähigkeit, schnelle lokale Interaktion, nachvollziehbare Schema-Migrationen und die Kontrolle über die eigenen Studienplandaten zentrale Ziele sind.
-Eine Echtzeitkollaboration zwischen mehreren Personen oder eine automatische Synchronisation über mehrere Geräte ist dagegen nur dann Bestandteil des Zielartefakts, wenn sie durch die Anforderungen ausdrücklich begründet wird.
-Die Arbeit kann somit die Local-First-Prinzipien auf die für den Anwendungsfall relevanten Eigenschaften anwenden, ohne eine nicht implementierte Kollaborationsfunktion als erfüllt darzustellen.
+Die Arbeit kann somit die Local-First-Prinzipien auf die für den Anwendungsfall relevanten Eigenschaften anwenden.
 
 Gleichzeitig entstehen durch die lokale Ausführung neue Verantwortlichkeiten.
 Die Anwendung muss Datenbanken sicher anlegen und aktualisieren, Fehler bei Schreibvorgängen kontrolliert behandeln, Backups ermöglichen und mit beschädigten oder nicht unterstützten Datenbankständen umgehen.
