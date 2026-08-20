@@ -1,211 +1,178 @@
 # 2.4 Das Local-First-Paradigma
 
-Local First bezeichnet keine einzelne Technologie und auch keine bestimmte Desktop-Runtime.
-Das Paradigma beschreibt vielmehr eine architektonische Priorisierung: Daten und zentrale Anwendungsoperationen sollen zunächst auf dem Gerät der nutzenden Person stattfinden, während ein Netzwerkdienst lediglich ergänzend für Synchronisation, Sicherung oder die Zusammenarbeit mehrerer Personen eingesetzt wird.
-Damit unterscheidet sich Local First grundlegend von einer cloud-zentrierten Anwendung, in der die entfernte Datenbank die autoritative Datenquelle darstellt und der Client überwiegend als Repräsentation oder Cache dieser Daten dient~\cite{kleppmann2019localfirst}.
+Local First bezeichnet keine einzelne Technologie und keine bestimmte Desktop-Runtime, sondern ein Architekturleitbild: Daten und zentrale Anwendungsoperationen sollen zunächst auf dem Gerät der nutzenden Person
+stattfinden, während ein Netzwerkdienst lediglich ergänzend für Synchronisation, Sicherung oder gemeinsame Nutzung eingesetzt wird. Diese Arbeitsdefinition der vorliegenden Arbeit orientiert sich an Kleppmann et al.
+[BELEG ERFORDERLICH; theoretische Definition, Schlüssel `kleppmann2019localfirst` noch nicht in `refs.bib`] und ist ausdrücklich als Arbeitsdefinition zu verstehen [BEGRIFF DEFINIEREN]. Damit unterscheidet sich Local
+First von einer cloudzentrierten Anwendung, in der die entfernte Datenbank die autoritative Datenquelle darstellt und der Client überwiegend als Repräsentation oder Cache dieser Daten dient [QUELLENREICHWEITE PRÜFEN; die
+Aussage beschreibt die hier betrachtete serverzentrierte Referenzarchitektur, nicht jede Webarchitektur].
 
-Die lokale Ausführung einer Anwendung ist dabei eine mögliche, aber keine hinreichende Voraussetzung für ein Local-First-Zielbild.
-Eine Electron-Anwendung kann beispielsweise lediglich eine cloudbasierte Webanwendung verpacken und weiterhin für jede fachliche Operation ein entferntes Backend benötigen.
-Umgekehrt kann eine Webanwendung mit Browserpersistenz und einem Offline-Datenmodell local-first-Eigenschaften besitzen, ohne als klassische Desktop-Anwendung installiert zu werden.
-Für die vorliegende Arbeit ist daher zwischen der Desktop-Runtime, der lokalen Persistenz und dem Local-First-Paradigma zu unterscheiden.
+Die lokale Ausführung ist eine mögliche, aber keine hinreichende Voraussetzung für Local First. Eine Electron-Anwendung kann weiterhin für jede fachliche Operation ein entferntes Backend benötigen; umgekehrt kann eine
+Webanwendung local-first-Eigenschaften besitzen, ohne als Desktop-Anwendung installiert zu sein. Für die vorliegende Arbeit sind daher die Desktop-Runtime, die lokale Persistenz und das Local-First-Paradigma begrifflich
+zu trennen.
 
 ## 2.4.1 Kernprinzipien nach Kleppmann et al.
 
-Kleppmann et al. schlagen Local First als Gegenentwurf zu einem ausschließlich serverzentrierten Datenmodell vor.
-Die lokale Kopie der Daten wird dabei als primäre Kopie behandelt.
-Ein Server kann weiterhin existieren und sekundäre Kopien für Synchronisation, Datensicherung oder den Zugriff von weiteren Geräten bereitstellen.
-Die Existenz eines Servers widerspricht dem Paradigma somit nicht, solange die lokale Anwendung nicht von dessen ständiger Verfügbarkeit abhängt und die lokale Kopie nicht lediglich als entbehrlicher Cache betrachtet wird~\cite{kleppmann2019localfirst}.
+Auf der Literaturebene entwerfen Kleppmann et al. Local First als Gegenentwurf zu einem ausschließlich serverzentrierten Datenmodell: Die lokale Kopie der Daten gilt als primäre Kopie, ein Server kann sekundäre Kopien
+für Synchronisation, Datensicherung oder den Zugriff weiterer Geräte bereitstellen [BELEG ERFORDERLICH; theoretische Definition, Kleppmann et al.]. Die Existenz eines Servers widerspricht dem Paradigma daher nicht,
+solange die lokale Anwendung nicht von dessen ständiger Verfügbarkeit abhängt und die lokale Kopie nicht als entbehrlicher Cache behandelt wird.
 
-Die Autorinnen und Autoren formulieren sieben Ideale, anhand derer local-first-orientierte Anwendungen beurteilt werden können.
-Diese Ideale sind nicht als technische Checkliste zu verstehen, die durch den Einsatz einer bestimmten Datenbank automatisch erfüllt wird.
-Sie beschreiben vielmehr ein Zielbild für die Interaktion mit den eigenen Daten und machen sichtbar, welche Eigenschaften durch eine serverzentrierte Architektur typischerweise beeinträchtigt werden.
+Die sieben Ideale von Kleppmann et al. dienen hier als Orientierung, nicht als technische Checkliste, die durch den Einsatz einer bestimmten Datenbank automatisch erfüllt würde [BELEG ERFORDERLICH; theoretische
+Definition, Kleppmann et al.]:
 
-Das erste Ideal wird als „No spinners“ beziehungsweise als unmittelbare Verfügbarkeit der eigenen Arbeit beschrieben.
-Lese- und Schreiboperationen sollen nicht von der Antwortzeit eines entfernten Servers abhängen.
-Da die primäre Datenkopie lokal vorliegt, können Änderungen zunächst lokal verarbeitet und anschließend im Hintergrund synchronisiert werden.
-Das reduziert die wahrgenommene Latenz und verhindert, dass alltägliche Interaktionen durch Netzwerkanfragen blockiert werden.
-Die lokale Datenhaltung garantiert dabei nicht automatisch eine schnelle Anwendung, schafft jedoch die architektonische Voraussetzung dafür, dass die Benutzeroberfläche auf lokale Transaktionen reagieren kann.
+1. **„No spinners“ (unmittelbare Verfügbarkeit):** Lese- und Schreiboperationen hängen nicht von der
+   Antwortzeit eines entfernten Servers ab; Änderungen werden zunächst lokal verarbeitet und anschließend im
+   Hintergrund synchronisiert. Lokale Datenhaltung garantiert keine geringe Latenz, schafft aber die
+   architektonische Voraussetzung dafür.
+2. **Verfügbarkeit auf mehreren Geräten:** Die lokale Primärkopie soll auf weiteren Geräten verfügbar sein,
+   ohne die lokale Autonomie aufzugeben; dazu müssen Änderungen übertragen und gegebenenfalls zusammengeführt
+   werden. Synchronisation ist daher kein bloßer Kopiervorgang, sondern muss parallele Änderungen mehrerer
+   Geräte berücksichtigen.
+3. **Netzwerk als optionale Infrastruktur:** Die nutzende Person kann Daten auch ohne Verbindung lesen und
+   verändern; ausstehende Änderungen werden nach Wiederherstellung der Verbindung synchronisiert. Dabei ist
+   zwischen einer kurzen Unterbrechung und einem vollständig offlinefähigen System zu unterscheiden:
+   Offlinefähigkeit setzt ein lokales Datenmodell, lokale Geschäftsoperationen und eine Strategie für
+   ausstehende Änderungen voraus.
+4. **Nahtlose Zusammenarbeit:** Parallele Änderungen werden erkannt und möglichst automatisch zusammengeführt.
+   Bei fachlich strukturierten, semantisch abhängigen Daten ist eine rein textbasierte Zusammenführung oft
+   unzureichend [BELEG ERFORDERLICH], weil die fachliche Bedeutung nicht aus der Zeichenfolge hervorgeht.
+   Kollaboration ist eine zusätzliche Komplexitätsstufe und keine zwingende Voraussetzung jeder
+   local-first-Anwendung.
+5. **„The Long Now“ (langfristige Erhaltung):** Daten bleiben auch bei Wegfall eines Anbieters zugänglich;
+   dafür müssen sie in einem nachvollziehbaren Format gespeichert, exportiert und gegebenenfalls in zukünftige
+   Schema-Versionen überführt werden. Die Forderung nach Schema-Migration ist dabei eine technische Konsequenz
+   der vorliegenden Arbeit, nicht unmittelbar eine Aussage der genannten Quelle [QUELLENREICHWEITE PRÜFEN].
+6. **Sicherheit und Datenschutz als Standard:** Eine zentrale Datenbank mit den Daten sämtlicher Nutzender ist
+   nicht nötig; optionale Synchronisation kann durch Ende-zu-Ende-Verschlüsselung die Einsichtsmöglichkeiten
+   eines Servers begrenzen. Local First ist jedoch nicht automatisch sicherer [BELEG ERFORDERLICH;
+   Sicherheitsimplikation der Arbeit]: Es reduziert die zentrale Datensammlung, ersetzt aber nicht den Schutz
+   des Endgeräts und die Sicherheit der konkreten Anwendung. Die Daten müssen auf den Endgeräten gegen
+   unberechtigten Zugriff, Schadsoftware, Verlust und unsichere Backups geschützt werden [AUSSAGE ZU ABSOLUT].
+7. **Kontrolle und Besitz der Daten:** Gemeint ist nicht juristisches Eigentum, sondern die Möglichkeit, Daten
+   unabhängig von den Vorgaben eines Dienstanbieters zu lesen, zu kopieren, zu exportieren, zu sichern und
+   weiterzuverarbeiten; ein eingeschränktes Exportformat oder eine nur über proprietäre APIs erreichbare
+   Datenbank begrenzt diese Kontrolle trotz lokaler Zwischenspeicherung.
 
-Das zweite Ideal betrifft die Verfügbarkeit der Daten auf mehreren Geräten.
-Local First bedeutet nicht, dass Daten dauerhaft auf ein einzelnes Endgerät eingeschlossen bleiben.
-Eine Anwendung sollte die lokale Primärkopie auf weiteren Geräten verfügbar machen können, ohne die lokale Autonomie aufzugeben.
-Dazu müssen Änderungen zwischen den Geräten übertragen und gegebenenfalls zusammengeführt werden.
-Die Synchronisation ist deshalb nicht bloß ein technischer Kopiervorgang, sondern muss die Möglichkeit berücksichtigen, dass mehrere Geräte unabhängig voneinander Änderungen vornehmen.
+Die Ideale gehen über die Forderung „offline verfügbar“ hinaus: Offlinefähigkeit, geringe Latenz und lokale Persistenz bilden die technische Grundlage, während Datensouveränität, langfristige Erhaltung, Datenschutz und
+gegebenenfalls Kollaboration die Nutzung und den Lebenszyklus der Daten betreffen. Nicht jede Anwendung muss alle Ideale erfüllen; ein lokales Einzelplatzszenario kann von lokaler Verfügbarkeit, geringer Latenz,
+Datenkontrolle und langfristig lesbaren Daten profitieren, ohne Echtzeitkollaboration anzubieten.
 
-Das dritte Ideal beschreibt das Netzwerk als optionale Infrastruktur.
-Die nutzende Person soll Daten lesen und verändern können, wenn keine Internetverbindung besteht.
-Nach Wiederherstellung der Verbindung können ausstehende Änderungen synchronisiert werden.
-Dabei ist zwischen einer kurzen Unterbrechung der Verbindung und einem vollständig offlinefähigen System zu unterscheiden.
-Eine Anwendung, die zwar bereits geladene Inhalte anzeigt, aber keine neuen Änderungen dauerhaft lokal speichern kann, erfüllt dieses Ideal nur eingeschränkt.
-Offlinefähigkeit setzt daher ein lokales Datenmodell, lokale Geschäftsoperationen und eine Strategie für die spätere Verarbeitung ausstehender Änderungen voraus.
-
-Das vierte Ideal ist die nahtlose Zusammenarbeit mehrerer Personen.
-Local First soll nicht die Vorteile kollaborativer Cloud-Anwendungen aufgeben, sondern lokale Datenhoheit mit gemeinsamer Bearbeitung verbinden.
-Hierfür müssen parallele Änderungen erkannt und möglichst automatisch zusammengeführt werden.
-Bei strukturierten Daten ist eine rein textbasierte Zusammenführung oft unzureichend, weil die fachliche Bedeutung einer Änderung nicht allein aus der Zeichenfolge oder dem gespeicherten Datensatz hervorgeht.
-Kollaboration ist deshalb eine zusätzliche Komplexitätsstufe und keine zwingende Voraussetzung für jede local-first-Anwendung.
-
-Das fünfte Ideal, „The Long Now“, richtet den Blick auf die langfristige Erhaltung der Daten.
-Eine nutzende Person sollte auf die eigenen Daten auch dann noch zugreifen können, wenn ein Anbieter seinen Dienst einstellt, Geschäftsbedingungen ändert oder eine bestimmte Serverkomponente nicht mehr betreibt.
-Dafür müssen Daten in einem nachvollziehbaren Format gespeichert, exportiert und gegebenenfalls in zukünftige Schema-Versionen überführt werden können.
-Die langfristige Verfügbarkeit hängt daher nicht nur von einer lokalen Datei ab, sondern auch von der Verfügbarkeit geeigneter Software, dokumentierter Formate und reproduzierbarer Migrationspfade.
-
-Das sechste Ideal fordert Sicherheit und Datenschutz als standardmäßige Eigenschaften.
-Durch die lokale Primärkopie muss nicht zwangsläufig eine zentrale Datenbank mit den Daten sämtlicher Nutzender betrieben werden.
-Bei einer optionalen Synchronisation können zusätzliche Verfahren wie Ende-zu-Ende-Verschlüsselung die Einsichtsmöglichkeiten eines Servers begrenzen.
-Local First ist jedoch nicht automatisch sicherer.
-Die Daten liegen auf den Endgeräten und müssen dort gegen unberechtigten Zugriff, Schadsoftware, Verlust und unsichere Backups geschützt werden.
-Die Verlagerung von Daten aus der Cloud auf das Gerät verschiebt daher einen Teil der Sicherheitsverantwortung in die Anwendung und auf das Betriebssystem des Endgeräts.
-
-Das siebte Ideal beschreibt die letztendliche Kontrolle und den Besitz der Daten durch die nutzende Person.
-Mit Besitz ist hier nicht das juristische Eigentum an den Inhalten gemeint, sondern die Möglichkeit, Daten unabhängig von den Vorgaben eines Dienstanbieters zu lesen, zu kopieren, zu exportieren, zu sichern und weiterzuverarbeiten.
-Ein eingeschränktes Exportformat oder eine ausschließlich über proprietäre APIs erreichbare Datenbank kann diese Kontrolle trotz lokaler Zwischenspeicherung begrenzen.
-Ein local-first-orientiertes System muss deshalb auch die Datenportabilität und die Nachvollziehbarkeit der Persistenz berücksichtigen.
-
-Die sieben Ideale verdeutlichen, dass Local First über die Forderung „offline verfügbar“ hinausgeht.
-Offlinefähigkeit, geringe Latenz und lokale Persistenz bilden die technische Grundlage.
-Datensouveränität, langfristige Erhaltung, Datenschutz und gegebenenfalls Kollaboration beschreiben darüber hinaus die Auswirkungen auf die Nutzung und den Lebenszyklus der Daten.
-Nicht jede Anwendung muss alle Ideale in gleichem Umfang erfüllen.
-Ein lokaler Einzelbenutzer-Studienplaner benötigt beispielsweise keine Echtzeitkollaboration zwischen mehreren Personen, kann aber dennoch von lokaler Verfügbarkeit, kurzer Reaktionszeit, Datenkontrolle und langfristig lesbaren Daten profitieren.
-
-Für die technische Umsetzung verteilter local-first-Anwendungen sind insbesondere Verfahren zur Zusammenführung paralleler Änderungen relevant.
-Bei der Operational Transformation werden konkurrierende Operationen so angepasst, dass sie in einem gemeinsamen Zustand angewendet werden können.
-Das Verfahren wurde insbesondere für kollaborative Editoren untersucht, setzt aber geeignete Operationsmodelle und Transformationsregeln voraus.
-Conflict-free Replicated Data Types (CRDTs) verwenden dagegen Datenstrukturen und Änderungsoperationen, deren Zusammenführung unter bestimmten Voraussetzungen unabhängig von der Reihenfolge der Zustellung zu einem konvergenten Zustand führt~\cite{kleppmann2019localfirst}.
-Dadurch kann ein Gerät Änderungen zunächst unabhängig von anderen Replikaten lokal ausführen.
-Der Einsatz von CRDTs beseitigt jedoch weder jede fachliche Mehrdeutigkeit noch die Notwendigkeit eines geeigneten Datenmodells.
-Wenn beispielsweise zwei Personen denselben fachlichen Wert auf inkompatible Weise verändern, muss die Anwendung festlegen, ob eine Änderung priorisiert, zusammengeführt oder der nutzenden Person zur Entscheidung vorgelegt wird.
-Für eine reine Einzelplatzanwendung ohne Synchronisation sind CRDTs oder Operational Transformation dagegen nicht erforderlich.
+Für die Zusammenführung paralleler Änderungen sind auf der Literaturebene insbesondere Operational Transformation und Conflict-free Replicated Data Types (CRDTs) relevant; CRDTs verwenden Datenstrukturen, deren
+Zusammenführung unter bestimmten Voraussetzungen reihenfolgeunabhängig zu einem konvergenten Zustand führt [BELEG ERFORDERLICH; theoretische Definition, Kleppmann et al.]. CRDTs beseitigen jedoch weder jede fachliche
+Mehrdeutigkeit noch die Notwendigkeit eines geeigneten Datenmodells: Bei einem konkurrierend veränderten fachlichen Wert muss die Anwendung priorisieren, zusammenführen oder der nutzenden Person zur Entscheidung
+vorlegen. Für eine Anwendung ohne Synchronisation sind weder CRDTs noch Operational Transformation erforderlich.
 
 ## 2.4.2 Lokale Datenhaltung und Offline-First
 
-Die zentrale technische Konsequenz des Local-First-Paradigmas ist die lokale Primärpersistenz.
-Die Anwendung muss die für ihre Kernfunktionen erforderlichen Daten auf dem Endgerät dauerhaft speichern und lokale Lese- und Schreiboperationen ausführen können.
-Ein flüchtiger UI-Zustand, ein Browser-Cache oder eine optimistische Darstellung einer noch nicht bestätigten Serveränderung genügt dafür nicht.
-Erst eine lokale Persistenzschicht ermöglicht es, dass eine Änderung auch ohne Netzwerkverbindung als dauerhafter Bestandteil des lokalen Datenbestands behandelt wird.
+Auf der technischen Grundlagenebene ist die zentrale Konsequenz des Paradigmas die lokale Primärpersistenz: Die Anwendung muss die für ihre Kernfunktionen erforderlichen Daten dauerhaft auf dem Endgerät speichern und
+lokal lesen und schreiben können. Ein flüchtiger UI-Zustand, ein Browser-Cache oder die optimistische Darstellung einer unbestätigten Serveränderung genügen dafür nicht.
 
-Offline-First und Local First sind eng verwandte, aber nicht vollständig deckungsgleiche Begriffe.
-Offline-First bezeichnet vor allem die Anforderung, dass die Anwendung auch bei fehlender Verbindung funktionsfähig bleibt und Netzwerkzugriffe nicht den primären Interaktionspfad bilden.
-Local First umfasst zusätzlich die Frage, wem die Daten unterstehen, wie sie langfristig erhalten werden und wie mehrere lokale Kopien zusammenarbeiten können.
-Eine Anwendung kann daher offlinefähig sein, ohne ihren Datenbestand in einer für die nutzende Person kontrollierbaren Form bereitzustellen.
-Umgekehrt kann eine lokale Anwendung die Datenhoheit stärken, ohne eine Synchronisation mit mehreren Geräten anzubieten.
+Offline-First und Local First sind eng verwandte, aber nicht deckungsgleiche Begriffe; für die vorliegende Arbeit gilt die folgende Arbeitsdefinition [BEGRIFF DEFINIEREN; eigene Arbeitsdefinition, keine etablierte
+Quelle]: Offline-First bezeichnet die Anforderung, dass die Anwendung auch ohne Verbindung funktionsfähig bleibt und Netzwerkzugriffe nicht den primären Interaktionspfad bilden; Local First umfasst zusätzlich, wem die
+Daten unterstehen, wie sie langfristig erhalten werden und wie mehrere lokale Kopien zusammenarbeiten können. Eine Anwendung kann daher offlinefähig sein, ohne ihren Datenbestand in kontrollierbarer Form bereitzustellen;
+umgekehrt kann eine lokale Anwendung die Datenhoheit stärken, ohne zu synchronisieren.
 
-Für die lokale relationale Datenhaltung eignet sich SQLite als eingebettete Datenbank.
-SQLite arbeitet als serverlose und konfigurationsarme Bibliothek innerhalb des Anwendungsprozesses und speichert eine vollständige relationale Datenbank in einer Datei.
-Dadurch entfällt ein separat zu installierender und zu betreibender Datenbankserver.
-SQL, Tabellen, Indizes, Fremdschlüssel und Transaktionen ermöglichen es, auch komplexere fachliche Beziehungen strukturiert abzubilden.
-Die Datenbank unterstützt ACID-Transaktionen, sodass mehrere zusammengehörige Änderungen atomar verarbeitet und bei einem Fehler zurückgerollt werden können~\cite{sqlite2025about}.
-Diese Eigenschaften machen SQLite für eine lokal ausgeführte Electron-Anwendung attraktiv, in der die Datenbank als Teil des installierten Anwendungssystems betrieben wird.
+Für die lokale relationale Datenhaltung eignet sich SQLite als eingebettete Datenbank [PRODUKTDETAIL PRÜFEN; Belegtyp: Produktdokumentation, Schlüssel `sqlite2025about` noch nicht in `refs.bib`]: SQLite arbeitet als
+serverlose, konfigurationsarme Bibliothek innerhalb des Anwendungsprozesses, speichert eine relationale Datenbank in einer Datei und unterstützt ACID-Transaktionen, sodass zusammengehörige Änderungen atomar verarbeitet
+und bei einem Fehler zurückgerollt werden können [PRODUKTDETAIL PRÜFEN]. Diese Eigenschaften betreffen die Engine und sind nicht gleichzusetzen mit einer vollständigen Backup- oder Wiederherstellungsgarantie
+[PRODUKTDETAIL PRÜFEN].
 
-Die Eigenschaften von SQLite sind nicht mit einer vollständigen Datensicherungsstrategie gleichzusetzen.
-Die Speicherung in einer einzelnen Datei vereinfacht zwar Kopieren, Export und Backup, schützt aber nicht automatisch vor Dateibeschädigung, versehentlichem Löschen, Ransomware oder dem Verlust des gesamten Endgeräts.
-Backups müssen konsistent erstellt, gegen unberechtigten Zugriff geschützt und wiederherstellbar sein.
-Ebenso ist zu entscheiden, ob die lokale Datenbank sensible Inhalte unverschlüsselt auf dem Datenträger ablegt oder ob zusätzliche Verschlüsselungs- und Schlüsselverwaltungsmechanismen erforderlich sind.
-Diese Fragen gehören zur Sicherheits- und Betriebsbetrachtung der Zielanwendung und sind nicht allein durch die Wahl von SQLite gelöst.
+Im Zielartefakt ist die schreibbare SQLite-Datei mit den Benutzerdaten vom unveränderlichen Installationsverzeichnis zu unterscheiden [PRODUKTDETAIL PRÜFEN; eigene Zielanforderung]: Die Datenbankdatei liegt in einem
+Benutzerdatenpfad und wird bei Updates nicht überschrieben, das Installationsverzeichnis enthält unveränderliche Programmressourcen. Die Speicherung in einer Datei vereinfacht Kopieren, Export und Backup, schützt aber
+nicht automatisch vor Dateibeschädigung, versehentlichem Löschen, Ransomware oder dem Verlust des Endgeräts; Backups müssen konsistent erstellt, gegen unberechtigten Zugriff geschützt und wiederherstellbar sein [BELEG
+ERFORDERLICH]. Ebenso ist zu entscheiden, ob sensible Inhalte unverschlüsselt abgelegt werden oder Verschlüsselungs- und Schlüsselverwaltungsmechanismen erforderlich sind.
 
-Eine relationale lokale Datenbank benötigt außerdem ein explizit verwaltetes Schema.
-Das Schema definiert Tabellen, Datentypen, Beziehungen, Integritätsbedingungen und Indizes, die von der Anwendung vorausgesetzt werden.
-Wird die Anwendung weiterentwickelt, müssen bestehende Datenbestände auf die neue Struktur überführt werden.
-Ein leerer Datenbankstand bei der Erstinstallation ist daher nicht der einzige relevante Fall.
-Ebenso müssen Aktualisierungen mit bereits vorhandenen Studienplänen, Kursen, Prüfungen und weiteren relational verknüpften Datensätzen funktionieren.
+Eine relationale lokale Datenbank benötigt ein explizit verwaltetes Schema; bei Weiterentwicklung müssen bestehende Datenbestände überführt werden, sodass ein leerer Erstinstallationsstand nicht der einzige relevante
+Fall ist. Schema-Migrationen beschreiben diese Entwicklung als versionierte, reproduzierbare Änderungen; Reihenfolge, Abhängigkeiten, Default-Werte, Datenübernahmen und Wiederholbarkeit der Schritte sind zu
+berücksichtigen. Migrationen sollten in transaktionalen Grenzen ausgeführt werden, damit ein Fehler nicht zu einem teilweise aktualisierten Schema führt; ob der eingesetzte Migration Runner dies für jeden Schritt
+leistet, ist produktabhängig und wird daher als Zielanforderung formuliert [PRODUKTDETAIL PRÜFEN; normative Zielanforderung]. Ein typgesichertes ORM wie Drizzle kann die Umsetzung unterstützen, ersetzt aber nicht die
+fachliche Prüfung der erzeugten SQL-Änderungen [PRODUKTDETAIL PRÜFEN; Quelle zur Drizzle-Architektur nachzutragen]. Für das Zielartefakt wird gefordert, dass Migrationen mit dem Anwendungspaket ausgeliefert, beim Start
+kontrolliert angewendet und für alle unterstützten Ausgangsversionen getestet werden; die Anwendung muss erkennen, welche Migrationen bereits ausgeführt wurden, und einen bestehenden Datenbestand nicht grundlos durch
+eine leere Datenbank ersetzen.
 
-Schema-Migrationen beschreiben diese Entwicklung als versionierte und reproduzierbare Änderungen.
-Eine Migration kann beispielsweise eine Tabelle anlegen, eine Spalte ergänzen, einen Index erzeugen oder vorhandene Werte in ein neues Format überführen.
-Bei komplexeren Änderungen sind Reihenfolge, Abhängigkeiten, Default-Werte, Datenübernahmen und die Wiederholbarkeit der einzelnen Schritte zu berücksichtigen.
-Migrationen sollten möglichst in transaktionalen Grenzen ausgeführt werden, damit ein Fehler nicht zu einem teilweise aktualisierten Schema führt.
-Die konkrete technische Umsetzung kann durch ein typgesichertes ORM wie Drizzle unterstützt werden, ersetzt aber nicht die fachliche Prüfung der erzeugten SQL-Änderungen.
-Insbesondere bei lokalen Anwendungen müssen Migrationen mit dem Anwendungspaket ausgeliefert, beim Start kontrolliert angewendet und für alle unterstützten Ausgangsversionen getestet werden.
+Für die Fallstudie ist dies relevant, weil die Ablösung der cloudbasierten Persistenz mehr als einen Datenbanktreiber-Wechsel bedeutet: Sie erfordert ein lokales relationales Modell, die Übernahme des bestehenden
+Datenbestands und einen kontrollierten Lebenszyklus für spätere Schemaänderungen [eigene Fallstudienbeobachtung, in der Analyse zu belegen].
 
-Damit wird die Schemaentwicklung zu einem Bestandteil des Anwendungslaufzeitsystems und nicht zu einer einmaligen Einrichtung durch eine Administration.
-Die Zielanwendung muss erkennen können, welche Migrationen bereits ausgeführt wurden, und darf eine bestehende Datenbank nicht ohne nachvollziehbaren Grund durch eine leere Datenbank ersetzen.
-Für die Fallstudie ist diese Eigenschaft relevant, weil die Ablösung der cloudbasierten Persistenz nicht nur eine Änderung des Datenbanktreibers bedeutet.
-Sie erfordert ein lokales relationales Modell, eine Übernahme des bestehenden Datenbestands und einen kontrollierten Lebenszyklus für spätere Schemaänderungen.
+Eine local-first-Anwendung kann unterschiedliche Synchronisationsstrategien verwenden [eigene Ableitung]. Im Einzelplatzszenario ist keine Synchronisation erforderlich; die lokale Datenbank bleibt die autoritative
+Persistenz und wird durch Backups ergänzt. Bei mehreren Geräten kann ein Dienst als sekundäre Ablage oder eine Synchronisation über lokales Netzwerk beziehungsweise Peer-to-Peer eingesetzt werden; die Wahl hängt von
+Geräteanzahl, Kollaboration, Datenschutz, Verfügbarkeit und Wiederherstellbarkeit ab. Synchronisation ist nicht mit einer bloßen Kopie der Datenbank gleichzusetzen: Änderungen müssen erkannt, übertragen und
+zusammengeführt werden; ein „Last Write Wins“-Verfahren reduziert technische Konflikte, kann fachlich relevante Änderungen aber unbemerkt überschreiben [BELEG ERFORDERLICH], weshalb bei relationalen Daten die
+Synchronisationsebene (Datensatz, Attribut, fachliche Operation) festzulegen ist. Ob eine Mehrgeräte- oder Mehrpersonensynchronisation zum Zielartefakt gehört, wird in der Fallstudie begründet; das Paradigma schreibt sie
+nicht zwingend vor.
 
-Eine local-first-orientierte Anwendung kann unterschiedliche Synchronisationsstrategien verwenden.
-Bei einem reinen Einzelbenutzer- und Einzelgerätszenario ist keine Synchronisation erforderlich.
-Die lokale Datenbank bleibt die einzige autoritative Persistenz und kann durch lokale oder manuell angestoßene Backups ergänzt werden.
-Bei mehreren Geräten kann ein Dienst als sekundäre Ablage eingesetzt werden, über den Änderungen zwischen den lokalen Datenbanken übertragen werden.
-Alternativ sind Synchronisationen über ein lokales Netzwerk oder direkte Peer-to-Peer-Verbindungen denkbar.
-Welche Strategie geeignet ist, hängt von Anforderungen an Geräteanzahl, Kollaboration, Datenschutz, Verfügbarkeit und Wiederherstellbarkeit ab.
+## 2.4.3 Abgrenzung zu cloudzentrierten und traditionellen Desktop-Anwendungen
 
-Die Synchronisation darf nicht mit einer bloßen Kopie der gesamten Datenbank gleichgesetzt werden.
-Werden zwei lokale Datenbanken unabhängig verändert, müssen Änderungen erkannt, übertragen und bei Bedarf zusammengeführt werden.
-Ein einfaches „Last Write Wins“-Verfahren kann zwar technische Konflikte reduzieren, kann aber fachlich relevante Änderungen unbemerkt überschreiben.
-Bei relationalen Daten muss deshalb festgelegt werden, ob auf Ebene ganzer Datensätze, einzelner Attribute oder fachlicher Operationen synchronisiert wird.
-Für den Studienplaner ist zunächst zu begründen, ob eine solche Mehrgeräte- oder Mehrbenutzersynchronisation überhaupt Bestandteil des Zielartefakts ist.
-Das Local-First-Paradigma schreibt diese Funktion nicht zwingend vor.
+Die Abgrenzung bezieht sich im Folgenden auf cloudzentrierte beziehungsweise serverabhängige Webanwendungen; der weitergehende Begriff „Cloud-Native“ bezeichnet einen eigenständigen Architektur- und Entwicklungsansatz
+und wird hier nicht als Bezeichnung der Ausgangsarchitektur verwendet [BEGRIFF DEFINIEREN].
 
-## 2.4.3 Abgrenzung zu Cloud-Native und traditionellen Desktop-Anwendungen
+Auf der Artefaktebene liegt in der betrachteten cloudzentrierten Web-Referenzarchitektur die dauerhaft maßgebliche Datenbasis im Backend; der Client verwaltet UI-Zustand und gegebenenfalls einen Cache, fachliche
+Änderungen werden an den Server übermittelt und dort persistiert [eigene Fallstudienbeobachtung; aus dem Ausgangsartefakt zu belegen]. Vorteile sind zentrale Verwaltung, einfache Bereitstellung neuer Versionen,
+gemeinsame Datenbasis und geräteübergreifende Zusammenarbeit; dem stehen Netzwerk- und Anbieterabhängigkeit, zentrale Angriffsziele und eingeschränkte Kontrolle über die gespeicherten Daten gegenüber [BELEG
+ERFORDERLICH].
 
-Die Unterschiede zwischen Local First, cloudzentrierten Anwendungen und traditionellen Desktop-Anwendungen lassen sich vor allem anhand der autoritativen Datenquelle und der Abhängigkeit vom Netzwerk erklären.
-In der betrachteten cloudzentrierten Web-Referenzarchitektur liegt die dauerhaft maßgebliche Datenbasis im Backend.
-Der Browser oder Web-Client verwaltet zwar UI-Zustand und möglicherweise einen Cache, fachliche Änderungen werden jedoch grundsätzlich an den Server übermittelt und dort persistiert.
-Die Vorteile dieses Modells liegen unter anderem in der zentralen Verwaltung, der einfachen Bereitstellung neuer Versionen, der gemeinsamen Datenbasis und der unkomplizierten Zusammenarbeit über verschiedene Geräte.
-Dem stehen Netzwerkabhängigkeit, Anbieterabhängigkeit, zentrale Angriffsziele und eingeschränkte Kontrolle über die gespeicherten Daten gegenüber.
+Eine traditionelle Desktop-Anwendung führt Programm und Daten überwiegend lokal aus, funktioniert ohne Netzwerk und greift unmittelbar auf lokale Dateien oder eine eingebettete Datenbank zu; sie ist jedoch nicht
+automatisch local-first, wenn Synchronisation, Zusammenarbeit oder ein transparenter Export fehlen [AUSSAGE ZU ABSOLUT].
 
-Eine traditionelle Desktop-Anwendung führt Programm und Daten überwiegend lokal aus.
-Sie kann deshalb ohne Netzwerkverbindung funktionieren und unmittelbar auf lokale Dateien oder eine eingebettete Datenbank zugreifen.
-Historisch werden solche Anwendungen häufig mit nativen Technologien wie WinForms oder Windows Presentation Foundation umgesetzt.
-Diese Technologien unterscheiden sich vom browserbasierten HTML-, CSS- und JavaScript-Modell der Ausgangsanwendung.
-Eine traditionelle Desktop-Anwendung ist außerdem nicht automatisch local-first im umfassenden Sinn.
-Sie kann zwar lokale Datenhoheit und Offlinefähigkeit bieten, aber weder mehrere Geräte synchronisieren noch eine nutzerfreundliche Zusammenarbeit oder einen transparenten Export unterstützen.
+Local First lässt sich heuristisch als Verknüpfung beider Modelle beschreiben: Die lokale Anwendung verbindet die unmittelbare Interaktion und Datenkontrolle einer Desktop-Anwendung mit ausgewählten Netzwerkdiensten wie
+Synchronisation, Backup und Kollaboration. Sie ist dafür nicht auf einen dauerhaft gekoppelten Cloud-Dienst angewiesen und bleibt auch als reine Einzelplatzanwendung funktionsfähig; der Begriff ist hier als heuristische
+Einordnung und nicht als etablierte Definition zu lesen [BEGRIFF DEFINIEREN]. Der entscheidende Unterschied zur Cloud-Architektur liegt in Reihenfolge und Autorität der Operationen: Die lokale Kopie ist primär, der
+Server optional.
 
-Local First kann daher als Hybrid zwischen den beiden Modellen verstanden werden.
-Die lokale Anwendung verbindet die unmittelbare Interaktion und Datenkontrolle einer Desktop-Anwendung mit ausgewählten Vorteilen cloudbasierter Dienste, insbesondere Synchronisation, Backup und Kollaboration.
-Der entscheidende Unterschied zur klassischen Cloud-Architektur liegt in der Reihenfolge und Autorität der Operationen.
-Die lokale Kopie ist nicht nur ein Cache, der bei der nächsten Serverantwort verworfen werden kann, sondern die primäre Grundlage der fachlichen Interaktion.
-Der Server ist optional und unterstützt die lokalen Kopien, anstatt sie vollständig zu ersetzen.
-
-Für das Transformationsszenario bedeutet dies, dass die Wahl von Electron allein noch keine Local-First-Architektur erzeugt.
-Electron stellt die Ausführungsumgebung und den kontrollierten Zugriff auf Betriebssystemressourcen bereit.
-Erst die Kombination aus lokaler Datenbank, lokalem Datenzugriff, offlinefähiger Geschäftslogik und einem bewusst optionalen Netzwerkpfad verwirklicht die relevanten Local-First-Eigenschaften.
-Die Preload- und IPC-Schicht ist dabei insbesondere für die sichere Vermittlung zwischen Web-UI und lokaler Persistenz verantwortlich.
+Für das Transformationsszenario bedeutet dies, dass die Wahl von Electron allein noch keine Local-First-Architektur erzeugt. Electron stellt die Ausführungsumgebung und technische Mechanismen für eine kontrollierte
+Vermittlung zwischen Web-UI und lokalen Ressourcen bereit; die wirksame Kontrolle entsteht erst durch Preload-/IPC-Design, Validierung und begrenzte Berechtigungen [PRODUKTDETAIL PRÜFEN]. Erst die Kombination aus lokaler
+Datenbank, lokalem Datenzugriff, offlinefähiger Geschäftslogik und einem bewusst optionalen Netzwerkpfad verwirklicht die relevanten Local-First-Eigenschaften [normative Zielanforderung].
 
 ## 2.4.4 Relevanz für das Transformationsszenario
 
-Die Überführung des KI-generierten Web-Prototyps in eine local-first-orientierte Desktop-Anwendung verändert nicht nur den Speicherort der Daten.
-Sie verändert die Autorität der Datenquelle, die Ausführungsreihenfolge der Geschäftsoperationen und die Verantwortung für Datenintegrität, Migration, Backup und Wiederherstellung.
-Aus einer Anfrage an einen entfernten Dienst wird eine lokale Transaktion, die innerhalb der Anwendung ausgeführt und dauerhaft in SQLite gespeichert wird.
-Der Netzwerkzugriff wird dadurch von einer notwendigen Voraussetzung zu einer optionalen Erweiterung, sofern keine Funktion ausdrücklich auf einen externen Dienst angewiesen ist.
+Für die Fallstudie werden aus diesen Grundlagen folgende Arbeitsanforderungen abgeleitet; sie sind bewusst als Anforderungen der Arbeit formuliert und nicht als universelle Eigenschaften jeder Local-First-Anwendung. Die
+Überführung des KI-generierten Web-Prototyps verändert nicht nur den Speicherort der Daten, sondern die Autorität der Datenquelle, die Ausführungsreihenfolge der Geschäftsoperationen und die Verantwortung für
+Datenintegrität, Migration, Backup und Wiederherstellung: Aus einer Anfrage an einen entfernten Dienst wird eine lokale Transaktion, die innerhalb der Anwendung ausgeführt und dauerhaft in SQLite gespeichert wird. Der
+Netzwerkzugriff wird dadurch zur optionalen Erweiterung, sofern keine Funktion ausdrücklich auf einen externen Dienst angewiesen ist.
 
-Für die Transformation lassen sich mehrere architektonische Verschiebungen ableiten.
-Erstens muss die bisher entfernte autoritative Persistenz durch eine lokale Primärpersistenz ersetzt werden.
-Zweitens benötigt die Anwendung eine Datenzugriffsschicht, die fachliche Operationen auf das lokale relationale Modell abbildet, anstatt die Benutzeroberfläche direkt mit HTTP- oder BaaS-Aufrufen zu koppeln.
-Drittens müssen Transaktionen und Integritätsbedingungen lokal nachvollziehbar umgesetzt werden.
-Viertens muss entschieden werden, ob Identitäts-, Berechtigungs- und Mandantenkonzepte aus dem Cloud-System für das lokale Nutzungsszenario weiterhin erforderlich sind.
-Fünftens sind Migrationen und Backups als Bestandteil des Anwendungslifecycles zu behandeln.
+Für die Transformation ergeben sich mehrere architektonische Verschiebungen [normative Zielanforderung]: Erstens ersetzt eine lokale Primärpersistenz die entfernte autoritative Persistenz. Zweitens bildet eine
+Datenzugriffsschicht fachliche Operationen auf das lokale relationale Modell ab, statt die Benutzeroberfläche direkt mit HTTP- oder BaaS-Aufrufen zu koppeln. Drittens werden Transaktionen und Integritätsbedingungen lokal
+nachvollziehbar umgesetzt. Viertens ist zu klären, ob Identitäts-, Berechtigungs- und Mandantenkonzepte aus dem Cloud-System für das lokale Nutzungsszenario weiterhin erforderlich sind. Fünftens sind Migrationen und
+Backups als Bestandteil des Anwendungslifecycles zu behandeln.
 
-Auch die Benutzeroberfläche muss an die neue Zustandssemantik angepasst werden.
-Ein Ladezustand, der in der Webanwendung auf die Antwort eines Servers wartet, ist bei einer lokalen Transaktion möglicherweise nicht mehr der primäre Interaktionsablauf.
-Stattdessen muss die Anwendung lokale Erfolge, Validierungsfehler und gegebenenfalls ausstehende Synchronisationsvorgänge unterscheiden.
-Optimistische UI-Aktualisierungen können bei einer lokalen Datenbanktransaktion teilweise durch eine unmittelbare lokale Persistierung ersetzt werden.
-Sie bleiben jedoch relevant, wenn Änderungen später mit weiteren Geräten oder einem entfernten Dienst abgeglichen werden.
+Auch die Benutzeroberfläche muss an die neue Zustandssemantik angepasst werden: Ein Ladezustand, der auf die Antwort eines Servers wartet, ist bei einer lokalen Transaktion nicht mehr der primäre Interaktionsablauf;
+stattdessen sind lokale Erfolge, Validierungsfehler und gegebenenfalls ausstehende Synchronisationsvorgänge zu unterscheiden. Optimistische UI-Aktualisierungen lassen sich bei einer lokalen Datenbanktransaktion teilweise
+durch unmittelbare lokale Persistierung ersetzen, bleiben jedoch bei einem späteren Abgleich mit weiteren Geräten oder einem Dienst relevant.
 
-Die lokale Persistenz darf nicht direkt aus dem Renderer-Prozess heraus angesprochen werden.
-Der Renderer verarbeitet weiterhin Web-Code und sollte keinen allgemeinen Dateisystem- oder Datenbankzugriff erhalten.
-Stattdessen werden fachlich begrenzte Operationen über die in Abschnitt 2.2.3 beschriebene Preload- und IPC-Schnittstelle an den privilegierten Anwendungsteil vermittelt.
-Die Eingaben müssen dort validiert und auf die erlaubten lokalen Operationen begrenzt werden.
-Damit verbindet das Local-First-Zielbild die Datenarchitektur mit der Sicherheitsarchitektur der Electron-Anwendung.
+In der sicherheitsgehärteten Zielarchitektur wird die lokale Persistenz nicht direkt aus dem Renderer-Prozess angesprochen [AUSSAGE ZU ABSOLUT; bewusste Designentscheidung der Zielarchitektur]. Der Renderer verarbeitet
+weiterhin Web-Code und erhält keinen allgemeinen Dateisystem- oder Datenbankzugriff; fachlich begrenzte Operationen werden über die in Abschnitt 2.2.3 beschriebene Preload- und IPC-Schnittstelle an den privilegierten
+Anwendungsteil vermittelt, wo Eingaben validiert und auf erlaubte lokale Operationen begrenzt werden. Damit verbindet das Local-First-Zielbild die Datenarchitektur mit der Sicherheitsarchitektur der Electron-Anwendung.
 
-Daraus folgt, dass die lokale Primärpersistenz, Offlinefähigkeit, schnelle lokale Interaktion, nachvollziehbare Schema-Migrationen und die Kontrolle über die eigenen Studienplandaten zentrale Ziele sind.
-Die Arbeit kann somit die Local-First-Prinzipien auf die für den Anwendungsfall relevanten Eigenschaften anwenden.
+Die lokale Ausführung erweitert zugleich die Verantwortung für Sicherheit und Betrieb [normative Zielanforderung]: Die Anwendung muss Datenbanken sicher anlegen und aktualisieren, Fehler bei Schreibvorgängen kontrolliert
+behandeln, Backups ermöglichen und mit beschädigten oder nicht unterstützten Datenbankständen umgehen; „sicher“ und „kontrolliert“ sind dabei als noch zu operationalisierende Anforderungen zu verstehen. Bei einer
+späteren Synchronisation kämen Konfliktregeln, Authentifizierung, Verschlüsselung und Wiederholbarkeit von Änderungen hinzu. Die Transformation reduziert die unmittelbare Abhängigkeit vom Cloud-Anbieter, beseitigt aber
+nicht die Komplexität der Datenhaltung; sie verlagert diese Komplexität in die lokale Anwendung, wo sie explizit modelliert, getestet und abgesichert werden muss.
 
-Gleichzeitig entstehen durch die lokale Ausführung neue Verantwortlichkeiten.
-Die Anwendung muss Datenbanken sicher anlegen und aktualisieren, Fehler bei Schreibvorgängen kontrolliert behandeln, Backups ermöglichen und mit beschädigten oder nicht unterstützten Datenbankständen umgehen.
-Bei einer späteren Synchronisation müssten zusätzlich Konfliktregeln, Authentifizierung, Verschlüsselung und Wiederholbarkeit von Änderungen entworfen werden.
-Die Transformation reduziert damit zwar die direkte Abhängigkeit vom Cloud-Anbieter, sie beseitigt aber nicht die Komplexität der Datenhaltung.
-Sie verlagert einen Teil dieser Komplexität in die lokale Anwendung, wo sie explizit modelliert, getestet und abgesichert werden muss.
+Daraus lassen sich für die spätere Analyse und Evaluation überprüfbare Kriterien ableiten [normative Zielanforderung]: die zentralen fachlichen Funktionen müssen ohne Netzwerk dauerhaft verfügbar sein, lokale
+Schreibvorgänge müssen dauerhaft persistiert werden, vorhandene Datenbestände müssen nach der Migration wiederverwendbar bleiben, nicht unterstützte Datenbankstände müssen kontrolliert behandelt werden und Backup- und
+Wiederherstellungsprozesse müssen nachvollziehbar sein.
 
-Das Local-First-Paradigma liefert für die vorliegende Arbeit somit ein architektonisches Zielbild und zugleich Bewertungskriterien für die Transformation.
-Eine erfolgreiche Überführung besteht nicht darin, das Web-Frontend lediglich als installierbare Datei zu verpacken.
-Erforderlich ist vielmehr eine lokale Daten- und Ausführungsarchitektur, in der die zentralen fachlichen Funktionen ohne Netzwerkverbindung verfügbar sind, Daten kontrollierbar gespeichert werden und spätere Erweiterungen wie Synchronisation nicht durch eine unklare Datenhaltung verhindert werden.
-Die daraus entstehenden Sicherheitsanforderungen an lokale Daten, IPC, Dateisystemzugriffe und Abhängigkeiten werden in Abschnitt 2.3 aus Sicht des Bedrohungsmodells weiter untersucht.
+Das Local-First-Paradigma liefert damit ein architektonisches Zielbild und zugleich Bewertungskriterien für die Transformation. Eine erfolgreiche Überführung besteht nicht darin, das Web-Frontend als installierbare Datei
+zu verpacken; erforderlich ist eine lokale Daten- und Ausführungsarchitektur, in der die zentralen fachlichen Funktionen ohne Netzwerkverbindung verfügbar sind, Daten kontrollierbar gespeichert werden und spätere
+Erweiterungen wie Synchronisation nicht durch unklare Datenhaltung verhindert werden. Die daraus entstehenden Sicherheitsanforderungen an lokale Daten, IPC, Dateisystemzugriffe und Abhängigkeiten werden in Abschnitt 2.3
+aus Sicht des Bedrohungsmodells weiter untersucht.
 
 ## Quellenhinweise für die spätere Überführung
 
-Die zentrale Quelle für die sieben Ideale, die Abgrenzung zu cloudzentrierten Anwendungen sowie die Einordnung von CRDTs ist:
+Die folgenden Quellen werden benötigt; die Schlüssel `kleppmann2019localfirst` und `sqlite2025about` sind nicht in `thesis/refs.bib` vorhanden und müssen vor der Überführung in die LaTeX-Fassung als tatsächlich geprüfte
+Bibliographieeinträge angelegt werden; bis dahin bleiben im Fließtext die Marker-Tags stehen.
 
-Kleppmann, M., Wiggins, A., van Hardenberg, P. und McGranaghan, M. (2019): „Local-first software: You own your data, in spite of the cloud“, Proceedings of the 2019 ACM SIGPLAN International Symposium on New Ideas, New Paradigms, and Reflections on Programming and Software, S. 154--178, DOI: 10.1145/3359591.3359737.
+- **Kleppmann, M., Wiggins, A., van Hardenberg, P. und McGranaghan, M. (2019):** „Local-first software: You own
+  your data, in spite of the cloud“, Proceedings of the 2019 ACM SIGPLAN International Symposium on New Ideas,
+  New Paradigms, and Reflections on Programming and Software, S. 154--178, DOI: 10.1145/3359591.3359737 —
+  vorläufiger Schlüssel `kleppmann2019localfirst`; Belegtyp: theoretische Definition (sieben Ideale, lokale
+  Primärkopie, CRDTs).
+- **SQLite-Dokumentation (offiziell):** vorläufiger Schlüssel `sqlite2025about`; Belegtyp:
+  Produktdokumentation (serverlose Bibliothek, Dateispeicherung, ACID).
+- **Drizzle-Dokumentation beziehungsweise dokumentierte Untersuchung des Migration Runners:** Belegtyp:
+  Produktdokumentation [PRODUKTDETAIL PRÜFEN].
+- **Allgemeine Sicherheits- und Betriebsaussagen** (Backups gegen Verlust, Ransomware, unberechtigten Zugriff;
+  Vor-/Nachteile cloudzentrierter Systeme): Belegtyp: theoretische Definition [BELEG ERFORDERLICH].
+- **Begriffsdefinitionen** (Offline-First als eigene Arbeitsdefinition, Abgrenzung cloudzentriert/„Cloud-Native“):
+  Belegtyp: eigene Arbeitsdefinition, wo nötig mit Literaturnachweis [BEGRIFF DEFINIEREN].
 
-Für die technischen Eigenschaften von SQLite sollte die offizielle SQLite-Dokumentation als Primärquelle in `thesis/refs.bib` ergänzt werden.
-Die im Draft verwendeten Schlüssel `kleppmann2019localfirst` und `sqlite2025about` sind daher als vorläufige Schlüssel zu verstehen und müssen vor der Überführung in die LaTeX-Fassung mit den tatsächlich angelegten Bibliographieeinträgen abgeglichen werden.
+Belegtypen im Text: **theoretische Definition** (aus Literatur nachzutragen), **Produktdokumentation** (offizielle Projektquellen), **eigene Fallstudienbeobachtung** (aus dem Ausgangsartefakt beziehungsweise
+DSR-Artefakten zu belegen), **normative Zielanforderung** (Anforderung der Arbeit, in Entwurf und Evaluation zu verknüpfen).
