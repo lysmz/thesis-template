@@ -9,6 +9,7 @@ Tatsächlich betrachten sie den erzeugten Code jedoch nie; sie beurteilen die An
 Der Quellcode bleibt für sie eine Blackbox, deren Qualität und Sicherheit sie nicht einschätzen können.
 
 Diese Entwicklung ist deshalb relevant, weil derart selbst erstellte Anwendungen zunehmend nicht mehr nur in der abgeschirmten Sandbox des Browsers laufen, sondern als lokale Desktop-Anwendungen mit direktem Zugriff auf Dateisystem und Systemressourcen.
+[Hier würde ich lieber schreiben, diese Entwicklung ist nicht nur deshalb relevant weil derat selbst erstelle Anwendungen zuhemend nicht menr nur in kleinen Hobby Tools laufen, sondern von echten Unternhemen, für die Produktiveumgebung gedacht sind und als lokale Desktop-Anwendungen mit direkt Zugriff auf Dateisystem und Systemressourcen, höhere Sicherheitsansprüche benötigen für eine sichere Anwendung]
 Eine Anwendung, die oberflächlich funktioniert, aber unbemerkt unsicher oder architektonisch mangelhaft ist, entfaltet in einer solchen lokalen Laufzeitumgebung ein ungleich höheres Schadenspotenzial als im Browser.
 Genau an dieser Stelle setzt die vorliegende Arbeit an.
 
