@@ -198,6 +198,11 @@ Die in dieser Arbeit betrachteten KI-generierten Web-Prototypen basieren auf ein
 Ihre Bereitstellung ist auf eine Ausführung im Browser und eine HTTP-basierte Kommunikation mit Backend-Diensten ausgerichtet.
 Für die lokale Ausführung wird daher eine Desktop-Runtime benötigt, die bestehende Webtechnologien in eine installierbare Anwendung einbettet und zugleich den kontrollierten Zugriff auf Betriebssystemressourcen ermöglicht.
 
+Die betrachtete Werkzeugkombination ist dabei nicht beliebig gewählt.
+Replit und Electron sind weit verbreitet, gut dokumentiert und mit einer breiten Community ausgestattet.
+Sie stehen stellvertretend für einen Migrationspfad, wie er außerhalb akademischer Kontexte tatsächlich vorkommt.
+Die Fallstudie gewinnt dadurch an Repräsentativität für den beschriebenen Praxisfall.
+
 Electron wird in dieser Arbeit als Integrationsruntime eingesetzt, weil es eine browserbasierte Benutzeroberfläche mit einer Node.js-basierten Laufzeitumgebung verbindet~\cite{electron2026process}.
 Die Bezeichnung Integrationsruntime beschreibt dabei die Funktion zwischen zwei Architekturebenen.
 Electron vermittelt zwischen der vorhandenen Web-Anwendung und den privilegierten Funktionen des Desktop-Betriebssystems.
@@ -259,6 +264,10 @@ Flutter Desktop würde dagegen eine weitgehende Neuentwicklung der vorhandenen W
 
 Electron wird deshalb als Zielruntime ausgewählt, weil die Technologie eine weitgehende Wiederverwendung des bestehenden Web- und Node.js-Stacks mit einer kontrollierten Kapselung privilegierter Desktop-Funktionen verbindet.
 Diese Wiederverwendbarkeit reduziert den Migrationsaufwand, ersetzt jedoch keine Sicherheitsanalyse.
+Über die technische Kompatibilität hinaus ist die Entscheidung für Electron auch wirtschaftlich motiviert.
+Der Migrationsleitfaden dieser Arbeit adressiert nicht ausschließlich Softwareentwicklerinnen und -entwickler, sondern ebenso fachfremde Akteure wie IT-Beraterinnen und -Berater oder Führungskräfte ohne technischen Hintergrund.
+Für diese Zielgruppe ist der Wiederverwendungswert des vorhandenen JavaScript- und TypeScript-Codes entscheidend, da ein Wechsel in eine andere Sprache eine vollständig neue Abhängigkeits- und Build-Architektur nach sich ziehen würde.
+Im bestehenden Ökosystem zu bleiben, vermeidet diesen Neuaufwand und begrenzt damit Kosten und Risiko der Migration.
 Insbesondere die Trennung von Main- und Renderer-Prozessen, die Gestaltung der Preload-API, die Absicherung der IPC-Kommunikation, die Begrenzung von Dateisystemzugriffen und der Umgang mit nicht vertrauenswürdigem Web-Inhalt sind für die Sicherheit der resultierenden Desktop-Anwendung maßgeblich.
 %----------------------------------------------------------------------
 \subsection{Sicherheitsmodell von Electron}
@@ -519,13 +528,13 @@ Ein eingeschränktes Exportformat oder eine nur über proprietäre APIs erreichb
 Die sieben Ideale gehen damit über die Forderung ``offline verfügbar'' hinaus.
 Offlinefähigkeit, geringe Latenz und lokale Persistenz bilden die technische Grundlage, während Datensouveränität, langfristige Erhaltung, Datenschutz und gegebenenfalls Kollaboration die Nutzung und den Lebenszyklus der Daten betreffen.
 Nicht jede Anwendung muss alle Ideale im gleichen Umfang erfüllen.
-Ein lokales Einzelplatzszenario kann von lokaler Verfügbarkeit, geringer Latenz, Datenkontrolle und langfristig lesbaren Daten profitieren, ohne Echtzeitkollaboration anzubieten.
+Welche Ideale eine konkrete Anwendung in welchem Umfang erfüllt, hängt von ihrem Anwendungsszenario und ihren fachlichen Anforderungen ab.
 
 Für die Zusammenführung paralleler Änderungen sind auf der Literaturebene insbesondere Operational Transformation und Conflict-free Replicated Data Types (CRDTs) relevant.
 CRDTs verwenden Datenstrukturen, deren Zusammenführung unter bestimmten Voraussetzungen reihenfolgeunabhängig zu einem konvergenten Zustand führt~\cite{kleppmann2019localfirst}.
 CRDTs beseitigen jedoch weder jede fachliche Mehrdeutigkeit noch die Notwendigkeit eines geeigneten Datenmodells.
 Bei einem konkurrierend veränderten fachlichen Wert muss die Anwendung priorisieren, zusammenführen oder der nutzenden Person eine Entscheidung vorlegen.
-Für eine Anwendung ohne Synchronisation sind weder CRDTs noch Operational Transformation erforderlich.
+Ob diese Mechanismen erforderlich sind, hängt davon ab, ob eine Anwendung parallele Änderungen mehrerer Geräte oder Nutzender zusammenführen muss.
 %----------------------------------------------------------------------
 \subsection{Lokale Datenhaltung und Offline-First}
 \label{sec:lokale-datenhaltung}
@@ -567,15 +576,15 @@ Für die Fallstudie ist dies relevant, weil die Ablösung der cloudbasierten Per
 Sie erfordert ein lokales relationales Modell, die Übernahme des bestehenden Datenbestands und einen kontrollierten Lebenszyklus für spätere Schemaänderungen.
 
 Eine Local-First-Anwendung kann unterschiedliche Synchronisationsstrategien verwenden.
-Im Einzelplatzszenario ist keine Synchronisation erforderlich, da die lokale Datenbank die autoritative Persistenz bleibt und durch Backups ergänzt wird.
+In einem reinen Einpersonenszenario ohne weitere Geräte ist keine Synchronisation erforderlich, da die lokale Datenbank die autoritative Persistenz bleibt und durch Backups ergänzt wird.
 Bei mehreren Geräten kann ein Dienst als sekundäre Ablage oder eine Synchronisation über lokales Netzwerk beziehungsweise Peer-to-Peer eingesetzt werden.
 Die Wahl hängt von Geräteanzahl, Kollaboration, Datenschutz, Verfügbarkeit und Wiederherstellbarkeit ab.
 Synchronisation ist nicht mit einer bloßen Kopie der Datenbank gleichzusetzen.
 Änderungen müssen erkannt, übertragen und zusammengeführt werden.
 Ein Last-Write-Wins-Verfahren reduziert technische Konflikte, kann fachlich relevante Änderungen aber unbemerkt überschreiben.
 Bei relationalen Daten ist deshalb die Synchronisationsebene, etwa Datensatz, Attribut oder fachliche Operation, ausdrücklich festzulegen.
-Ob eine Mehrgeräte- oder Mehrpersonensynchronisation zum Zielartefakt gehört, wird in der Fallstudie begründet.
-Das Paradigma schreibt sie nicht zwingend vor.
+Die betrachtete Fallstudie umfasst eine Gruppenfunktion zur Zusammenarbeit mehrerer Personen; deren Überführung ist daher Bestandteil des Transformationsziels.
+Das Paradigma selbst schreibt Synchronisation nicht für jede Anwendung zwingend vor.
 %----------------------------------------------------------------------
 \subsection{Abgrenzung zu cloudzentrierten und traditionellen Desktop-Anwendungen}
 \label{sec:abgrenzung-anwendungsmodelle}
@@ -593,7 +602,7 @@ Sie ist jedoch nicht allein dadurch local-first.
 Für die Einordnung sind zusätzlich die lokale Autorität der Daten, ihre Kontrollierbarkeit und gegebenenfalls die Fähigkeit zur Synchronisation mit weiteren Kopien relevant.
 
 Local First verbindet als heuristische Einordnung die unmittelbare Interaktion und Datenkontrolle einer lokalen Anwendung mit ausgewählten Netzwerkdiensten wie Synchronisation, Backup und Kollaboration.
-Diese Dienste sind optional und können im Einzelplatzszenario vollständig entfallen.
+Diese Dienste sind in der allgemeinen Theorie optional und können in einem reinen Einpersonenszenario vollständig entfallen.
 Der entscheidende Unterschied zur cloudzentrierten Architektur liegt in der Reihenfolge und Autorität der Operationen.
 Die lokale Kopie ist primär, während ein Server nur eine ergänzende Funktion übernimmt.
 
@@ -605,10 +614,10 @@ Erst die Kombination aus lokaler Datenbank, lokalem Datenzugriff, offlinefähige
 \subsection{Relevanz für das Transformationsszenario}
 \label{sec:relevanz-local-first}
 %----------------------------------------------------------------------
-Für die Fallstudie wird zunächst ein lokales Einzelplatzszenario betrachtet.
+Für die Fallstudie bilden die lokale Persistenz und die Offlinefähigkeit die Grundlage der Transformation.
 Die Kernfunktionen des Studienplaners sollen ohne Netzwerkverbindung verfügbar sein.
-Eine Mehrgeräte- oder Mehrpersonensynchronisation ist für dieses Zielbild kein notwendiger Bestandteil, kann aber durch eine geeignete Datenhaltung später ergänzt werden.
-Diese Scope-Entscheidung ermöglicht es, lokale Primärpersistenz und Offlinefähigkeit zu untersuchen, ohne bereits die zusätzliche Komplexität verteilter Konfliktauflösung als notwendige Voraussetzung einzuführen.
+Zusätzlich umfasst die Anwendung eine Gruppenfunktion, über die mehrere Personen gemeinsame Termine und Aufgaben verwalten.
+Die Überführung dieser Kollaborationsfunktion ist daher Bestandteil des Transformationsziels; die lokale Primärpersistenz bildet dafür die gemeinsame Grundlage.
 
 Die Überführung des KI-generierten Web-Prototyps verändert nicht nur den Speicherort der Daten, sondern die Autorität der Datenquelle, die Ausführungsreihenfolge der Geschäftsoperationen und die Verantwortung für Datenintegrität, Migration, Backup und Wiederherstellung.
 Aus einer Anfrage an einen entfernten Dienst wird eine lokale Transaktion, die innerhalb der Anwendung ausgeführt und dauerhaft in SQLite gespeichert wird.

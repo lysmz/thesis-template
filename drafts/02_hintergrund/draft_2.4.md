@@ -53,13 +53,12 @@ Definition, Kleppmann et al.]:
    Datenbank begrenzt diese Kontrolle trotz lokaler Zwischenspeicherung.
 
 Die Ideale gehen über die Forderung „offline verfügbar“ hinaus: Offlinefähigkeit, geringe Latenz und lokale Persistenz bilden die technische Grundlage, während Datensouveränität, langfristige Erhaltung, Datenschutz und
-gegebenenfalls Kollaboration die Nutzung und den Lebenszyklus der Daten betreffen. Nicht jede Anwendung muss alle Ideale erfüllen; ein lokales Einzelplatzszenario kann von lokaler Verfügbarkeit, geringer Latenz,
-Datenkontrolle und langfristig lesbaren Daten profitieren, ohne Echtzeitkollaboration anzubieten.
+gegebenenfalls Kollaboration die Nutzung und den Lebenszyklus der Daten betreffen. Nicht jede Anwendung muss alle Ideale im gleichen Umfang erfüllen; welcher Umfang im konkreten Fall angemessen ist, hängt vom Anwendungsszenario ab.
 
 Für die Zusammenführung paralleler Änderungen sind auf der Literaturebene insbesondere Operational Transformation und Conflict-free Replicated Data Types (CRDTs) relevant; CRDTs verwenden Datenstrukturen, deren
 Zusammenführung unter bestimmten Voraussetzungen reihenfolgeunabhängig zu einem konvergenten Zustand führt [BELEG ERFORDERLICH; theoretische Definition, Kleppmann et al.]. CRDTs beseitigen jedoch weder jede fachliche
 Mehrdeutigkeit noch die Notwendigkeit eines geeigneten Datenmodells: Bei einem konkurrierend veränderten fachlichen Wert muss die Anwendung priorisieren, zusammenführen oder der nutzenden Person zur Entscheidung
-vorlegen. Für eine Anwendung ohne Synchronisation sind weder CRDTs noch Operational Transformation erforderlich.
+vorlegen. Ob CRDTs oder Operational Transformation erforderlich sind, hängt davon ab, ob eine Anwendung parallele Änderungen mehrerer Geräte oder Nutzender zusammenführen muss.
 
 ## 2.4.2 Lokale Datenhaltung und Offline-First
 
@@ -92,12 +91,11 @@ eine leere Datenbank ersetzen.
 Für die Fallstudie ist dies relevant, weil die Ablösung der cloudbasierten Persistenz mehr als einen Datenbanktreiber-Wechsel bedeutet: Sie erfordert ein lokales relationales Modell, die Übernahme des bestehenden
 Datenbestands und einen kontrollierten Lebenszyklus für spätere Schemaänderungen [eigene Fallstudienbeobachtung, in der Analyse zu belegen].
 
-Eine local-first-Anwendung kann unterschiedliche Synchronisationsstrategien verwenden [eigene Ableitung]. Im Einzelplatzszenario ist keine Synchronisation erforderlich; die lokale Datenbank bleibt die autoritative
+Eine local-first-Anwendung kann unterschiedliche Synchronisationsstrategien verwenden [eigene Ableitung]. In einem reinen Einpersonenszenario ohne weitere Geräte ist keine Synchronisation erforderlich; die lokale Datenbank bleibt die autoritative
 Persistenz und wird durch Backups ergänzt. Bei mehreren Geräten kann ein Dienst als sekundäre Ablage oder eine Synchronisation über lokales Netzwerk beziehungsweise Peer-to-Peer eingesetzt werden; die Wahl hängt von
 Geräteanzahl, Kollaboration, Datenschutz, Verfügbarkeit und Wiederherstellbarkeit ab. Synchronisation ist nicht mit einer bloßen Kopie der Datenbank gleichzusetzen: Änderungen müssen erkannt, übertragen und
 zusammengeführt werden; ein „Last Write Wins“-Verfahren reduziert technische Konflikte, kann fachlich relevante Änderungen aber unbemerkt überschreiben [BELEG ERFORDERLICH], weshalb bei relationalen Daten die
-Synchronisationsebene (Datensatz, Attribut, fachliche Operation) festzulegen ist. Ob eine Mehrgeräte- oder Mehrpersonensynchronisation zum Zielartefakt gehört, wird in der Fallstudie begründet; das Paradigma schreibt sie
-nicht zwingend vor.
+Synchronisationsebene (Datensatz, Attribut, fachliche Operation) festzulegen ist. Die betrachtete Fallstudie umfasst eine Gruppenfunktion zur Zusammenarbeit mehrerer Personen; deren Überführung ist daher Bestandteil des Transformationsziels. Das Paradigma selbst schreibt Synchronisation nicht für jede Anwendung zwingend vor.
 
 ## 2.4.3 Abgrenzung zu cloudzentrierten und traditionellen Desktop-Anwendungen
 
@@ -113,7 +111,7 @@ Eine traditionelle Desktop-Anwendung führt Programm und Daten überwiegend loka
 automatisch local-first, wenn Synchronisation, Zusammenarbeit oder ein transparenter Export fehlen [AUSSAGE ZU ABSOLUT].
 
 Local First lässt sich heuristisch als Verknüpfung beider Modelle beschreiben: Die lokale Anwendung verbindet die unmittelbare Interaktion und Datenkontrolle einer Desktop-Anwendung mit ausgewählten Netzwerkdiensten wie
-Synchronisation, Backup und Kollaboration. Sie ist dafür nicht auf einen dauerhaft gekoppelten Cloud-Dienst angewiesen und bleibt auch als reine Einzelplatzanwendung funktionsfähig; der Begriff ist hier als heuristische
+Synchronisation, Backup und Kollaboration. Sie ist dafür nicht auf einen dauerhaft gekoppelten Cloud-Dienst angewiesen und bleibt auch ohne Kollaborations- und Synchronisationsfunktionen als lokale Anwendung funktionsfähig; der Begriff ist hier als heuristische
 Einordnung und nicht als etablierte Definition zu lesen [BEGRIFF DEFINIEREN]. Der entscheidende Unterschied zur Cloud-Architektur liegt in Reihenfolge und Autorität der Operationen: Die lokale Kopie ist primär, der
 Server optional.
 
