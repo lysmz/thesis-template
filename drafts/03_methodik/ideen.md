@@ -21,7 +21,16 @@ Der rote Faden: Die Forschungsfragen sind gestaltungsorientiert („Wie kann …
 - Artefakttypen nach March & Smith: Konstrukte, Modelle, Methoden, Instanziierungen. Die Arbeit erzeugt primär eine **Methode** (den Migrationspfad) und sekundär eine **Instanziierung** (die Electron-Anwendung).
 - Warum DSR hier passt: Der Erkenntnisbeitrag der Arbeit ist kein Naturgesetz und keine empirische Beschreibung, sondern eine wiederverwendbare Vorgehensweise samt validiertem Anwendungsbeispiel.
 
-### 3.1.2 Der DSRM-Prozess nach Peffers et al.
+### 3.1.2 Einordnung nach Hevner: Relevanz, Rigor und die drei Zyklen
+
+- Hevner et al. (2004) verankern DSR in der Wirtschaftsinformatik und formulieren sieben Guidelines; zentral ist dabei das Spannungsfeld zwischen **Relevanz** (Beitrag zur Lösung eines realen Problems) und **Rigor** (wissenschaftliche Strenge).
+- Hevner (2007) modelliert DSR als **drei Zyklen**:
+  - **Relevance Cycle** — verbindet die Forschung mit dem Anwendungsumfeld (reales Problem, Anforderungen).
+  - **Rigor Cycle** — verbindet die Forschung mit der Wissensbasis (bestehende Theorien, Methoden, Artefakte).
+  - **Design Cycle** — der innere Kern aus Bauen und Evaluieren des Artefakts.
+- Rolle in dieser Arbeit: Hevner liefert die konzeptionelle Einordnung, **warum** sowohl das Praxisproblem (Relevanz) als auch die methodische Strenge (Rigor) zentral sind; Peffers liefert die konkrete Prozessschrittfolge. Hevner wird daher nur knapp als Rahmung genutzt, nicht als zweiter vollständiger Prozess.
+
+### 3.1.3 Der DSRM-Prozess nach Peffers et al.
 
 - Peffers et al. operationalisieren DSR als Abfolge von sechs Aktivitäten:
   1. **Problemidentifikation und Motivation**
@@ -64,6 +73,18 @@ Der rote Faden: Die Forschungsfragen sind gestaltungsorientiert („Wie kann …
 - Aktivität 6 (Kommunikation) → die Arbeit selbst sowie **Kapitel 7** (Diskussion des Beitrags) und **Kapitel 8** (Fazit, Ausblick).
 - Darstellung als **Zuordnungstabelle** (DSRM-Aktivität → Kapitel → zentrale Artefakte/Ergebnisse), ggf. ergänzt um eine Rückkopplungsnotation (Kapitel 6 kann auf Kapitel 5 zurückwirken).
 
+<!-- PLACEHOLDER: Zuordnungstabelle DSRM-Aktivität -> Kapitel -> Artefakt (in LaTeX als \label{tab:dsrm-mapping}) -->
+| DSRM-Aktivität | Kapitel | Zentrale Artefakte / Ergebnisse |
+|---|---|---|
+| 1 Problemidentifikation & Motivation | 1, 4 | Problemstellung, Ist-Zustands-Analyse |
+| 2 Zieldefinition | 4 | Anforderungskatalog |
+| 3 Design & Entwicklung | 5 | Architektur, Transformationsmethodik |
+| 4 Demonstration | 6 | Fallstudien-Instanziierung |
+| 5 Evaluation | 6 | Evaluationsergebnisse |
+| 6 Kommunikation | 7, 8 | Diskussion, Fazit, Ausblick |
+
+> Potenzielle Quelle für Aktivitätsbezeichnungen und -reihenfolge: Peffers et al. (2007), Abb. 1 (Prozessmodell). Die Zuordnung der Aktivitäten zu den Kapiteln ist eine eigene Synthese der Arbeit.
+
 ### 3.3.2 Iterative Design-Zyklen in der Praxis
 
 - Der Forschungsprozess ist nicht linear, sondern besteht aus mehreren **Design-Zyklen**; jede Transformations-Teilaufgabe wird als Zyklus mit drei Phasen behandelt:
@@ -83,10 +104,10 @@ Der rote Faden: Die Forschungsfragen sind gestaltungsorientiert („Wie kann …
 ## Offene Punkte für Quellen und spätere Überarbeitung
 
 - Primärquellen in `refs.bib` aufnehmen: Peffers et al. (2007/2008, „A Design Science Research Methodology for Information Systems Research“, JMIS), Hevner et al. (2004, „Design Science in Information Systems Research“, MIS Quarterly), ggf. Hevner (2007, „A Three Cycle View“) und March & Smith (1995).
-- Entscheiden, ob Hevners sieben Guidelines bzw. das Drei-Zyklen-Modell kurz ergänzt werden oder ob die Arbeit aus Platzgründen allein bei Peffers bleibt (Empfehlung: Peffers als Hauptrahmen, Hevner nur als kurze Einordnung von Relevanz/Rigor).
+- Hevner ist als kurze Einordnung aufgenommen (3.1.2); beim Überführen nach LaTeX darauf achten, dass der Abschnitt knapp bleibt und nicht zu einem zweiten vollständigen Prozessmodell ausufert.
 - Genaue Aktivitätsbezeichnungen und ggf. Seitenzahlen aus der Primärquelle verifizieren; deutsche Übersetzungen der Aktivitätsnamen konsistent verwenden.
 - Abbildung des DSRM-Prozesses als `.drawio.svg` anlegen (sechs Aktivitäten mit Rückkopplungspfeilen, Einstiegspunkt „problemzentriert“ markieren).
-- Zuordnungstabelle (DSRM-Aktivität → Kapitel → Artefakte) formalisieren; prüfen, ob sie als `\ref`-fähige Tabelle in Kapitel 3 oder als einführende Grafik in Kapitel 3 steht.
+- Zuordnungstabelle in 3.3.1 ist als Platzhalter angelegt; beim Überführen nach LaTeX entscheiden, ob sie als `\ref`-fähige `tabular`-Tabelle oder als Abbildung steht, und die Kapitel-/Artefaktspalten final befüllen.
 - Begründung der Einzelfall-Studie ggf. mit Yin (Case Study Research) absichern; klarstellen, dass die Fallstudie Demonstrations- und Evaluationszweck dient, nicht eigenständige Methodik ist.
 - Die Terminologie-Trennung (Forschungsmethodik vs. Transformationsmethodik als Artefakt) als expliziten Hinweis in den Fließtext aufnehmen, um Verwechslungen zu vermeiden.
 - Umfang im Blick behalten: Das Kapitel ist ein Methodikkapitel einer Bachelorarbeit — konzise halten, keine allgemeine DSR-Lehrbuchdarstellung.
