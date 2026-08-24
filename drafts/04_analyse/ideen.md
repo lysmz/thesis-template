@@ -12,7 +12,7 @@ Abgrenzung zu Kapitel 2 bleibt wichtig: Kapitel 2 beschreibt Konzepte neutral (T
 
 ### 4.1.1 Unterschiede der Vibe-Coding-Plattformen
 
-- Wie unterscheiden sich die Plattformen voneinander? Replit, Lovable, Bolt, v0, Claude Artifacts/Cursor, Figma Make gegenüberstellen.
+- Wie unterscheiden sich die Plattformen voneinander? Fokussierte Auswahl von drei Plattformen — Replit, Lovable, Figma Make — die je einen Plattformtyp repräsentieren (Code-Agenten werden bewusst erst in 4.2.1 eingeführt).
 - Zentrale Unterscheidungsdimensionen:
   - **Full-Stack vs. Frontend-only:** Erzeugt die Plattform ein eigenes Backend oder nur die UI?
   - **Eigenes Backend vs. BaaS:** Läuft die Logik als eigener Code oder als externer Dienst (z. B. Supabase)?
@@ -23,7 +23,7 @@ Abgrenzung zu Kapitel 2 bleibt wichtig: Kapitel 2 beschreibt Konzepte neutral (T
   - **Replit** — Full-Stack mit eigenem Backend und Frontend; erzeugt eine lauffähige Client-Server-App.
   - **Lovable + BaaS** — Frontend-Generierung mit externem Backend; Backend bleibt außerhalb des eigenen Codes.
   - **Figma Make** — reines Design-to-Code; nur UI, keine Logik, kein Backend.
-  - **Cursor / Copilot / Claude Artifacts** — Code-Agenten; Assistenz, kein vollständiges Prototyping.
+  - Die Code-Agenten (Cursor, Copilot, Claude Code/Artifacts) werden in 4.1 bewusst **nicht** verglichen; sie dienen in 4.2.1 als zweiter Vergleichspol für die Begründung der Replit-Wahl.
 
 ### 4.1.2 Gemeinsamkeiten der Plattformen
 
@@ -83,11 +83,11 @@ Abgrenzung zu Kapitel 2 bleibt wichtig: Kapitel 2 beschreibt Konzepte neutral (T
 - Jede Anforderung einer Forschungsfrage zuordnen (Rückverfolgbarkeit).
 - Ergebnis ist ein strukturierter **Anforderungskatalog** (funktional / nicht-funktional, je mit Quelle und Priorität) — zugleich der Bewertungsmaßstab für Kapitel 6.
 
-## Offene Punkte und Ideen, die noch zu klären sind
+## Festgelegte Entscheidungen (Stand: 2026-08-24)
 
-- **Umfang des Plattform-Vergleichs:** Wie viele Plattformen (Replit, Lovable, Bolt, v0, Figma Make, …) werden wirklich verglichen, ohne dass 4.1 ausufert? Eine fokussierte Auswahl reicht.
-- **Framing der Framework-Agnostik:** Wie formuliert man die Reichweite des Migrationspfads präzise, sodass FF1 ehrlich bleibt (Methodik übertragbar, Patterns framework-spezifisch, Svelte-Beispiel als Beleg)?
-- **Abgrenzung zu Kapitel 2:** 2.1.1 beschreibt die Tools neutral, 4.1 vergleicht und entscheidet — die Vergleichsdimensionen müssen klar als das Neue erkennbar sein.
-- **Tiefe der Repo-Analyse:** Architekturebene oder mit Codebeispielen? (Letztere gehören eher in Kapitel 5.)
-- **Anforderungskatalog:** Formal (Tabelle mit IDs für den Abgleich in Kapitel 6) oder narrativ?
-- **Quellenbasis:** Welche Befunde liegen in `.agents/artifacts/` bereits vor, welche Analyse muss für 4.2.2 noch dokumentiert werden?
+- **Umfang des Plattform-Vergleichs:** 3 Plattformen — Replit, Lovable, Figma Make — je ein Typ, dargestellt in einer Vergleichstabelle. Der Code-Agent-Pol (Cursor/Copilot/Claude Code) wird **nur in 4.2.1** eingeführt, als zweite Richtung des Replit-Kompromisses.
+- **Framing der Framework-Agnostik:** Festgelegt — die **Methodik** ist übertragbar, die **konkreten Refactoring-Patterns** sind framework-spezifisch (Demonstration an React). Beleg: Svelte/Vue-Beispiel plus „Aufwand" als Vergleichsdimension. FF1 bleibt ehrlich: „Methode übertragbar, Implementierung nicht".
+- **Abgrenzung zu Kapitel 2:** Expliziter Rahmensatz plus **migrationsrelevante Dimensionen** (Full-Stack vs. Frontend, eigenes Backend vs. BaaS, Code-Ownership, Deployment) als das Neue gegenüber der neutralen Tool-Beschreibung in 2.1.1.
+- **Tiefe der Repo-Analyse:** Architekturebene in Kap. 4 (Struktur, Kopplung, Cloud-Abhängigkeiten, Datenmodell, Funktionsumfang). Codebeispiele gehören nach Kap. 5.
+- **Anforderungskatalog:** Formale Tabelle mit IDs (`FA-01`, `LF-01`, `SEC-01`, `Q-01`), je mit Quelle, FF-Zuordnung und Priorität — als referenzierbarer Bewertungsmaßstab für Kap. 6.
+- **Quellenbasis:** In `.agents/artifacts/` liegt noch **kein** Repo-Analyse-Artefakt vor (nur 001/002, beides Meta). Die Ist-Zustand-Analyse des Replit-Repos muss **zuerst** als DSR-Artefakt dokumentiert werden, bevor 4.2.2/4.2.3 geschrieben werden.
