@@ -64,7 +64,7 @@ Abgrenzung zu Kapitel 2 bleibt wichtig: Kapitel 2 beschreibt Konzepte neutral (T
 - Deshalb ist Replit der geeignetste Ausgangspunkt für die Desktop-Transformation — und genau deshalb wird es als Fallstudie gewählt.
 
 ### 4.2.2 Analyse des erstellten Repos (Ist-Zustand)
-
+- Entstehungsprozess & Prompting-Strategie der Demonstrator-App (Studienplaner).
 - Das tatsächlich erzeugte Replit-Repo präzise analysieren — dies ist die Faktenbasis des Kapitels.
 - Technische Bestandsaufnahme: Stack (React-Frontend, Express-Backend), Struktur, Deployment.
 - Code-Beschaffenheit: Kopplung, fehlende Trennung der Belange, Black-Box-Charakter.
