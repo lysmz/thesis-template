@@ -13,7 +13,7 @@ Der rote Faden: Die Forschungsfragen sind gestaltungsorientiert („Wie kann …
 
 ## 3.1 Design Science Research als methodischer Rahmen
 
-### 3.1.1 Grundidee und Charakteristika von DSR
+### 3.1.1 Grundidee und Charakteristika von DSR < schauen ob wir das wirklich brauchen.>
 
 - DSR ist ein Forschungs- und Problemlösungsparadigma, das darauf abzielt, **praktische Probleme durch die Schaffung und Evaluation eines IT-Artefakts** zu lösen und dabei zugleich einen wissenschaftlichen Erkenntnisbeitrag zu liefern.
 - Abgrenzung zur verhaltenswissenschaftlichen (deskriptiven) Forschung: Diese beschreibt und erklärt Phänomene; DSR ist **präskriptiv** und gestaltet Lösungen.
@@ -30,7 +30,7 @@ Der rote Faden: Die Forschungsfragen sind gestaltungsorientiert („Wie kann …
   - **Design Cycle** — der innere Kern aus Bauen und Evaluieren des Artefakts.
 - Rolle in dieser Arbeit: Hevner liefert die konzeptionelle Einordnung, **warum** sowohl das Praxisproblem (Relevanz) als auch die methodische Strenge (Rigor) zentral sind; Peffers liefert die konkrete Prozessschrittfolge. Hevner wird daher nur knapp als Rahmung genutzt, nicht als zweiter vollständiger Prozess.
 
-### 3.1.3 Der DSRM-Prozess nach Peffers et al.
+### 3.1.3 Der DSRM-Prozess nach Peffers et al. < weiß nicht ob das gebraucht wird.>
 
 - Peffers et al. operationalisieren DSR als Abfolge von sechs Aktivitäten:
   1. **Problemidentifikation und Motivation**

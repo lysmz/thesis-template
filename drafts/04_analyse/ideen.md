@@ -77,6 +77,7 @@ Abgrenzung zu Kapitel 2 bleibt wichtig: Kapitel 2 beschreibt Konzepte neutral (T
 
 - Aus der Repo-Analyse die Anforderungen und Probleme ableiten — das ist die Zieldefinition (DSRM-Aktivität 2).
 - **Funktionale Anforderungen:** Der Funktionsumfang des Studienplaners bleibt nach der Transformation vollständig erhalten.
+- **nicht-Funktionalen Anforderungen:** Was ist mit den nicht-Funktionalen Anforderungen der Web-App, wie werden diese Übernommen.
 - **Local-First-Anforderungen (FF1, FF3):** Offline-Fähigkeit, lokale SQLite-Datenhaltung, Datensouveränität, automatisierte Schema-Migrationen.
 - **Sicherheitsanforderungen (FF4):** Rückgriff auf Kapitel 2.3.3 — kein direkter Dateisystem-/Node-Zugriff aus dem Renderer, minimale IPC-Schnittstellen, Validierung, Least Privilege.
 - **Qualitätsanforderungen (FF2):** Trennung der Belange, Reduktion der Kopplung, Wartbarkeit.
@@ -91,3 +92,6 @@ Abgrenzung zu Kapitel 2 bleibt wichtig: Kapitel 2 beschreibt Konzepte neutral (T
 - **Tiefe der Repo-Analyse:** Architekturebene in Kap. 4 (Struktur, Kopplung, Cloud-Abhängigkeiten, Datenmodell, Funktionsumfang). Codebeispiele gehören nach Kap. 5.
 - **Anforderungskatalog:** Formale Tabelle mit IDs (`FA-01`, `LF-01`, `SEC-01`, `Q-01`), je mit Quelle, FF-Zuordnung und Priorität — als referenzierbarer Bewertungsmaßstab für Kap. 6.
 - **Quellenbasis:** In `.agents/artifacts/` liegt noch **kein** Repo-Analyse-Artefakt vor (nur 001/002, beides Meta). Die Ist-Zustand-Analyse des Replit-Repos muss **zuerst** als DSR-Artefakt dokumentiert werden, bevor 4.2.2/4.2.3 geschrieben werden.
+
+## Festgelegte Entscheidungen (Stand: 2026-09-09)
+- was machen wir mit den nicht Funktionalen Anforderungen, soll die App genau so aussehen wie die Web-App? 

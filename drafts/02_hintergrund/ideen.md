@@ -19,11 +19,11 @@ Vergleichsdimensionen:
 
 ### 2.1.2 Charakteristika KI-generierten Codes
 
-- Black-Box-Charakter: Code wird ohne architektonische Dokumentation oder Designentscheidungen generiert.
-- Mangelnde Architektur: fehlende Separation of Concerns, hohe Kopplung, keine saubere Schichten-Trennung.
+- Black-Box-Charakter: Code wird ohne architektonische Dokumentation und mit implezieten oder hidden (durch systemprompts) Designentscheidungen generiert.
+- Standardtisiere Architektur: fehlende Separation of Concerns, hohe Kopplung, erweiterbarkeit und scope werden nicht am anfang mit beachtet (design driven development) bzw. microservice architecture.
 - Qualitätsdefizite nach ISO/IEC 25010: Wartbarkeit, kognitive Belastung, Kompatibilität, Sicherheit.
 - Stand der Forschung: aktuelle Studien zur Code-Qualität von KI-generiertem Code (z.B. zu Bugs, Sicherheitslücken, Halluzinationen).
-- Implikation für die Transformation: Code kann nicht "as-is" übernommen werden — systematisches Refactoring ist erforderlich.
+- Implikation für die Transformation: Code kann nicht oder schlecht von einem Schema abweichen, wird nicht umbeding skalierbar designed, überprüft nur für die sicherheit von web umgebungen und geht möglichweißer von einem happy path aus und kann deshalb nicht "as-is" übernommen werden — systematisches Refactoring ist erforderlich.
 
 ## 2.2 Von der Web-Architektur zur Desktop-Anwendung
 
@@ -175,8 +175,9 @@ Electron bietet eine technische Grundlage für Isolation, erzwingt sie aber nich
 ### 2.4.2 Lokale Datenhaltung und Offline-First
 
 - SQLite als lokale Datenbank: Vorteile (zero-config, embedded, ACID, gut getestet).
+- Alternative SQLite Forks, mit syncronisierung oder verschlüsselung
 - Schema-Migrationen: Notwendigkeit bei komplexen relationalen Daten.
-- Synchronisationsstrategien (falls Cloud-Anbindung später gewünscht).
+- Synchronisationsstrategien.
 
 ### 2.4.3 Abgrenzung zu Cloud-Native und traditionellen Desktop-Apps
 
